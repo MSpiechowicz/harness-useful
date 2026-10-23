@@ -1,0 +1,209 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  BUN_VERSION: 1.4.2
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - run: bun run lint
+      - run: bun run guard
+      - run: bun run test
+
+  build:
+    name: Build
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - run: bun run verify:build
+
+  docker:
+    name: Docker smoke and Lighthouse
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      # Lighthouse CI is a Node program, bunx runs it through `node`.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: bun install --frozen-lockfile
+      - name: Build the image
+        run: docker build -t harness-useful:ci .
+      - name: Start the container
+        run: docker run -d --name harness-useful -p 8080:8080 harness-useful:ci
+      - name: Wait until the container is healthy
+        run: |
+          for attempt in $(seq 1 30); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' harness-useful)
+            echo "attempt $attempt: $status"
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs harness-useful
+          echo "::error::The container did not become healthy in time"
+          exit 1
+      - name: Assert the served responses
+        run: |
+          set -euo pipefail
+          base=http://localhost:8080
+
+          fail() {
+            echo "::error::$1"
+            exit 1
+          }
+
+          status_of() {
+            curl -s -o /dev/null -w '%{http_code}' "$base$1"
+          }
+
+          expect_status() {
+            local actual
+            actual=$(status_of "$1")
+            [ "$actual" = "$2" ] || fail "$1 returned $actual, expected $2"
+          }
+
+          expect_headers() {
+            local headers header
+            headers=$(curl -s -o /dev/null -D - "$base$1")
+            for header in Content-Security-Policy Strict-Transport-Security X-Content-Type-Options \
+              Referrer-Policy X-Frame-Options Permissions-Policy Cross-Origin-Opener-Policy; do
+              printf '%s' "$headers" | grep -qi "^${header}:" || fail "$1 is missing the $header header"
+            done
+          }
+
+          expect_status / 200
+          expect_status /desktop 200
+          expect_status /nope 404
+          expect_status /sitemap.xml 200
+
+          redirect=$(curl -s -o /dev/null -D - "$base/desktop/")
+          printf '%s' "$redirect" | head -n1 | grep -q ' 301' || fail "/desktop/ is not a 301"
+          location=$(printf '%s' "$redirect" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p')
+          [ "$location" = "/desktop" ] || fail "/desktop/ redirects to '$location', expected /desktop"
+
+          redirect=$(curl -s -o /dev/null -D - "$base/index")
+          printf '%s' "$redirect" | head -n1 | grep -q ' 301' || fail "/index is not a 301"
+          location=$(printf '%s' "$redirect" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p')
+          [ "$location" = "/" ] || fail "/index redirects to '$location', expected /"
+
+          redirect=$(curl -s -o /dev/null -D - "$base/desktop.html?x=1")
+          printf '%s' "$redirect" | head -n1 | grep -q ' 301' || fail "/desktop.html?x=1 is not a 301"
+          location=$(printf '%s' "$redirect" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p')
+          [ "$location" = "/desktop?x=1" ] || fail "/desktop.html?x=1 redirects to '$location', expected /desktop?x=1"
+
+          redirect=$(curl -s -o /dev/null -D - "$base/index.html")
+          printf '%s' "$redirect" | head -n1 | grep -q ' 301' || fail "/index.html is not a 301"
+          location=$(printf '%s' "$redirect" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p')
+          [ "$location" = "/" ] || fail "/index.html redirects to '$location', expected /"
+
+          # Open redirects: a Location starting with // or /\ is resolved by browsers as another host.
+          # Each of these must be a 404, be served without a redirect (nginx merges the leading slashes),
+          # or redirect to a path that starts with a single slash.
+          for attack in '//evil.example.html' '/\evil.example.html' '/%5Cevil.example/' '/%2F%5Cevil.example/' \
+            '//index.html' '//evil.example/x.html'; do
+            attack_headers=$(curl --path-as-is -s -o /dev/null -D - "$base$attack")
+            attack_status=$(printf '%s' "$attack_headers" | head -n1 | tr -d '\r' | cut -d' ' -f2)
+            attack_location=$(printf '%s' "$attack_headers" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p')
+            if [ "$attack_status" = "404" ]; then
+              continue
+            fi
+            if [ -z "$attack_location" ]; then
+              [ "$attack_status" -lt 300 ] || fail "$attack returned $attack_status without a Location"
+              continue
+            fi
+            if [[ "$attack_location" =~ ^/[^/\\] ]]; then
+              continue
+            fi
+            fail "$attack returned $attack_status with Location '$attack_location', expected 404, no redirect or a single-slash path"
+          done
+
+          # Hidden files are refused inside the prefix locations too, and the unused Brotli files are not shipped.
+          expect_status /media/.x 404
+          expect_status /_app/immutable/.x 404
+          expect_status /index.html.br 404
+
+          expect_headers /
+          expect_headers /desktop/
+          expect_headers /nope
+
+          # The 404 page is served at any missing URL, so its assets must be root-absolute to load at nested paths.
+          nested=$(curl -s -o /dev/null -w '%{http_code}' "$base/a/b")
+          [ "$nested" = "404" ] || fail "/a/b returned $nested, expected 404"
+          nested_body=$(curl -s "$base/a/b")
+          grep -q '"/_app/immutable/' <<<"$nested_body" || fail "the 404 body at /a/b has no root-absolute /_app/immutable/ asset"
+          if grep -qF './_app' <<<"$nested_body"; then
+            fail "the 404 body at /a/b references ./_app"
+          fi
+          nested_assets=$(grep -o '/_app/immutable/[^"]*\.\(js\|css\)' <<<"$nested_body" || true)
+          nested_asset=${nested_assets%%$'\n'*}
+          [ -n "$nested_asset" ] || fail "no /_app/immutable asset is referenced from the 404 body"
+          expect_status "$nested_asset" 200
+
+          # A real hashed asset, found through the home page.
+          home=$(curl -s "$base/")
+          assets=$(grep -o '/_app/immutable/[^"]*\.\(js\|css\)' <<<"$home" || true)
+          asset=${assets%%$'\n'*}
+          [ -n "$asset" ] || fail "no /_app/immutable asset is referenced from /"
+          asset_headers=$(curl -s -o /dev/null -D - "$base$asset")
+          printf '%s' "$asset_headers" | grep -qi '^cache-control:.*max-age=31536000.*immutable' \
+            || fail "$asset is not served with an immutable cache header"
+
+          gzip_headers=$(curl -s -o /dev/null -D - -H 'Accept-Encoding: gzip' "$base/")
+          printf '%s' "$gzip_headers" | grep -qi '^content-encoding: gzip' || fail "/ is not gzip compressed"
+
+          llms_headers=$(curl -s -o /dev/null -D - "$base/llms.txt")
+          printf '%s' "$llms_headers" | grep -qi '^content-type: text/plain' || fail "/llms.txt is not text/plain"
+          md_headers=$(curl -s -o /dev/null -D - "$base/index.md")
+          printf '%s' "$md_headers" | grep -qi '^content-type: text/markdown' || fail "/index.md is not text/markdown"
+
+          echo "All response assertions passed"
+      - name: Lighthouse
+        run: bunx lhci autorun --config=lighthouserc.json
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          if-no-files-found: ignore
+      - name: Container logs on failure
+        if: failure()
+        run: docker logs harness-useful

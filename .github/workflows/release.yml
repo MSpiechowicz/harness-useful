@@ -1,0 +1,154 @@
+name: Release
+
+# After CI succeeds on main, semantic-release analyses the Conventional Commits since the last tag.
+# fix: -> patch, feat: -> minor, "BREAKING CHANGE:" footer or "feat!:" -> major, other types do not release.
+# On a release it bumps package.json, updates CHANGELOG.md, pushes the release commit and the vX.Y.Z tag and
+# creates a DRAFT GitHub release. The image job then builds and pushes the container image to GHCR with build
+# provenance, the deploy job triggers Coolify (when configured) and the publish job un-drafts the release.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+# Releases run one at a time and are never cancelled half-way (a cancelled run could leave a tag without an image).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+env:
+  BUN_VERSION: 1.4.2
+  IMAGE: ghcr.io/mspiechowicz/harness-useful
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    name: Version and draft release
+    # Only releases from main: CI must have passed for a push to main, or a manual run on main.
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+      && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main')
+      || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the release commit + tag, create the draft release
+    outputs:
+      # Written by the exec plugin's successCmd (see .releaserc.json). Empty when nothing was released.
+      released: ${{ steps.semantic-release.outputs.released }}
+      version: ${{ steps.semantic-release.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          # The commit CI validated. If main has moved on since, semantic-release sees a stale
+          # branch and does nothing, the newer push gets its own run.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0 # semantic-release needs the full history and tags
+          persist-credentials: false # semantic-release authenticates with GITHUB_TOKEN itself
+      # semantic-release is a Node program (it needs Node >= 22.14), bunx runs it through `node`.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - name: semantic-release
+        id: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bunx semantic-release
+
+  image:
+    name: Container image
+    needs: release
+    if: ${{ needs.release.outputs.released == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # push to GHCR
+      id-token: write # sign the build provenance attestation
+      attestations: write # store it, for `gh attestation verify`
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: v${{ needs.release.outputs.version }} # the tag carries the bumped package.json
+          persist-credentials: false
+      - name: Log in to GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+      - name: Build and push
+        id: build
+        env:
+          VERSION: ${{ needs.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          minor="${VERSION%.*}"
+          docker buildx create --use
+          docker buildx build \
+            --platform linux/amd64 \
+            --push \
+            --tag "$IMAGE:$VERSION" \
+            --tag "$IMAGE:$minor" \
+            --tag "$IMAGE:latest" \
+            --build-arg "VERSION=$VERSION" \
+            --build-arg "REVISION=$(git rev-parse HEAD)" \
+            --build-arg "CREATED=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --metadata-file "$RUNNER_TEMP/metadata.json" \
+            .
+          digest=$(jq -r '."containerimage.digest"' "$RUNNER_TEMP/metadata.json")
+          if [[ ! "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "::error::Could not read the image digest from the build metadata"
+            exit 1
+          fi
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
+        with:
+          subject-name: ghcr.io/mspiechowicz/harness-useful
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
+  deploy:
+    name: Deploy to Coolify
+    needs: [release, image]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Trigger the Coolify webhook
+        env:
+          COOLIFY_WEBHOOK_URL: ${{ secrets.COOLIFY_WEBHOOK_URL }}
+          COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
+        run: |
+          if [ -z "$COOLIFY_WEBHOOK_URL" ]; then
+            echo "COOLIFY_WEBHOOK_URL is not set, skipping the deploy."
+            exit 0
+          fi
+          case "$COOLIFY_WEBHOOK_URL" in
+            https://*) ;;
+            *)
+              echo "::error::COOLIFY_WEBHOOK_URL must start with https://"
+              exit 1
+              ;;
+          esac
+          curl -fsS --proto '=https' --max-time 30 -X GET -H "Authorization: Bearer $COOLIFY_API_TOKEN" "$COOLIFY_WEBHOOK_URL" > /dev/null
+
+  publish:
+    name: Publish release
+    needs: [release, image, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # un-draft the release
+    steps:
+      - name: Publish the draft release as latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.release.outputs.version }}
+        run: gh release edit "v$VERSION" --repo "$GITHUB_REPOSITORY" --draft=false --latest

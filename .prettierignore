@@ -1,0 +1,8 @@
+build
+.svelte-kit
+.generated
+.lighthouseci
+bun.lock
+CHANGELOG.md
+static/media
+node_modules
