@@ -280,9 +280,40 @@
     }
   }
 
+  /* Phones: smaller chips pulled inside the gutter, the text clipped so they cover less of the small screenshot. */
   @media (max-width: 640px) {
-    .chips {
-      display: none;
+    .chip {
+      max-width: 52%;
+      padding: 5px 8px;
+      border-radius: var(--radius-md);
+      font-size: 9px;
+      line-height: 1.45;
+    }
+
+    .chip-title,
+    .chip-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .c0 {
+      left: -4px;
+      top: 6px;
+    }
+
+    .c1 {
+      right: -4px;
+    }
+
+    .c2 {
+      left: 2%;
+      bottom: 4px;
+    }
+
+    .c3 {
+      right: 2%;
+      bottom: 4px;
     }
   }
 </style>
