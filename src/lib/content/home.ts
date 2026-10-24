@@ -362,9 +362,9 @@ export const DATA_CONNECTIONS: DataConnection[] = [
 ];
 
 export const TOURS: Tour[] = [
-  { id: 'desktop', caption: '· 73 s · chat, subagents, approvals, review' },
-  { id: 'dashboard', caption: '· 1 min · where the tokens go' },
-  { id: 'skills', caption: '· 72 s · request to verified PR' },
+  { id: 'desktop', caption: '· chat, subagents and review' },
+  { id: 'dashboard', caption: '· where your tokens go' },
+  { id: 'skills', caption: '· from request to verified PR' },
 ];
 
 /** Install commands shown at the bottom of the board (same as the Desktop install steps). */

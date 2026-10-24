@@ -71,6 +71,12 @@
     color: var(--text-strong);
   }
 
+  /* A title that opens the section: trim the space above its capitals so the gap under the section's top edge reads
+     the same as the gap above its bottom edge. */
+  header > .title:first-child {
+    text-box: trim-start cap alphabetic;
+  }
+
   .lead {
     max-width: 640px;
     margin-top: 12px;
