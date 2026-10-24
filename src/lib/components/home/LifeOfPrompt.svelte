@@ -58,8 +58,10 @@
     <div class="caption-row">
       {#key stepper.index}
         <div class="caption" style:animation-name={frame.caption.anim}>
-          <span class="dot" style:background={frame.caption.color} style:box-shadow="0 0 10px {frame.caption.color}"></span>
-          <span class="caption-title">{frame.caption.title}</span>
+          <span class="caption-head">
+            <span class="dot" style:background={frame.caption.color} style:box-shadow="0 0 10px {frame.caption.color}"></span>
+            <span class="caption-title">{frame.caption.title}</span>
+          </span>
           <span class="caption-sub">{frame.caption.sub}</span>
         </div>
       {/key}
@@ -137,12 +139,12 @@
     color: var(--muted);
   }
 
-  /* Stage: a 600px panel holding the 1120 x 560 diagram; --s shrinks it on narrow screens. */
+  /* Stage: a 600px panel holding the 1120 x 560 diagram; --s shrinks it on narrow screens, and the caption band with it. */
   .stage {
     --s: 1;
 
     position: relative;
-    height: calc(534px * var(--s) + 66px);
+    height: calc(534px * var(--s) + max(44px, 66px * var(--s)));
     overflow: hidden;
     border: 1px solid rgb(255 255 255 / 6%);
     border-radius: 22px;
@@ -238,31 +240,48 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 22px;
+    bottom: max(10px, 22px * var(--s));
     display: flex;
     justify-content: center;
     padding-inline: 12px;
   }
 
+  /* Fixed size on every step: one line sized for the longest hop, whatever the length of the current one. */
   .caption {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 4px 12px;
-    padding: 10px 18px;
+    gap: 2px max(6px, 12px * var(--s));
+    width: min(100%, 640px * var(--s));
+    padding: max(5px, 10px * var(--s)) max(10px, 18px * var(--s));
     border: 1px solid rgb(255 255 255 / 8%);
     border-radius: 999px;
     background: rgb(12 16 17 / 92%);
     font-family: var(--font-mono);
-    font-size: 13.5px;
+    /* Scales with the diagram, floored so it stays readable on a phone. */
+    font-size: max(9.5px, 13.5px * var(--s));
     animation: 0.5s ease both;
   }
 
+  .caption-head {
+    display: flex;
+    align-items: center;
+    gap: max(6px, 12px * var(--s));
+    min-width: 0;
+  }
+
   .dot {
-    width: 8px;
-    height: 8px;
+    flex: none;
+    width: max(6px, 8px * var(--s));
+    height: max(6px, 8px * var(--s));
     border-radius: 50%;
+  }
+
+  .caption-title,
+  .caption-sub {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .caption-title {
@@ -357,6 +376,19 @@
 
   .result {
     color: #a9b6b2;
+  }
+
+  /* Phones: the readable floor no longer fits one line, so every step uses the same two-line pill. */
+  @media (max-width: 820px) {
+    .caption {
+      flex-direction: column;
+      width: min(100%, 300px);
+    }
+
+    .caption-head,
+    .caption-sub {
+      max-width: 100%;
+    }
   }
 
   @media (max-width: 900px) {

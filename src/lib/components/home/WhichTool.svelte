@@ -71,13 +71,16 @@
   header {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px 12px;
   }
 
+  /* The name never splits; on a narrow card the license badge wraps under it instead. */
   h3 {
     font-family: var(--font-mono);
     font-size: 17px;
+    white-space: nowrap;
   }
 
   h3 a {
@@ -159,7 +162,25 @@
 
   @media (max-width: 640px) {
     .card {
-      padding: 20px;
+      padding: 20px 16px;
+    }
+
+    /* Sized so the longest name ("Harness Dashboard") and its badge share one row from 360px up, like every card. */
+    header {
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: clamp(13px, 3.7vw, 17px);
+    }
+
+    .swatch {
+      margin-right: 8px;
+    }
+
+    .license {
+      padding: 2px 6px;
+      font-size: 10px;
     }
 
     dl {

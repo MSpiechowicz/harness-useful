@@ -75,8 +75,9 @@ Commits follow [Conventional Commits](https://www.conventionalcommits.org/). Aft
 
 1. semantic-release picks the version (`fix:` patch, `feat:` minor, `feat!:` or a `BREAKING CHANGE:` footer major), updates `CHANGELOG.md` and `package.json`, pushes the release commit and the `vX.Y.Z` tag and creates a draft GitHub release.
 2. The image is built for linux/amd64 and pushed to `ghcr.io/mspiechowicz/harness-useful` with the tags `X.Y.Z`, `X.Y` and `latest`, with a signed build provenance attestation.
-3. If the Coolify secrets are set, the Coolify deploy webhook is called. Without them this step is skipped.
-4. The draft release is published as the latest release.
+3. The draft release is published as the latest release.
+
+The workflow does not deploy: Coolify picks up the new commit on `main` itself.
 
 - `@semantic-release/git` pushes the release commit to `main` with `GITHUB_TOKEN`, so branch protection or rulesets on `main` must allow GitHub Actions to push (or drop the git plugin from `.releaserc.json`).
 - Releases are cut only from Conventional Commits (`feat:` or `fix:`). The first release needs one after the initial commit.
@@ -85,12 +86,11 @@ Dependabot proposes grouped weekly updates for GitHub Actions, Bun dependencies 
 
 ### Coolify setup
 
-1. In Coolify create a new resource of type Docker image: `ghcr.io/mspiechowicz/harness-useful:latest` (or pin a version such as `ghcr.io/mspiechowicz/harness-useful:1.0.0`).
+1. In Coolify create a new resource from this GitHub repository (through the Coolify GitHub App) with the Dockerfile build pack, branch `main`.
 2. Set the exposed port to `8080`.
 3. Set the domain to `https://harness-useful.com` and add a redirect from `www.harness-useful.com` to the apex domain.
 4. Set the health check path to `/healthz`.
-5. Make the GHCR package public (package settings on GitHub), or add registry credentials to Coolify.
-6. Enable the deploy webhook for the resource and add two repository secrets in GitHub (Settings, Secrets and variables, Actions): `COOLIFY_WEBHOOK_URL` (the webhook URL) and `COOLIFY_API_TOKEN` (a Coolify API token that may deploy).
+5. Keep auto deploy on: Coolify rebuilds and deploys on every push to `main`, including the release commit.
 
 ## License
 

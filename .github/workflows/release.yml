@@ -4,7 +4,7 @@ name: Release
 # fix: -> patch, feat: -> minor, "BREAKING CHANGE:" footer or "feat!:" -> major, other types do not release.
 # On a release it bumps package.json, updates CHANGELOG.md, pushes the release commit and the vX.Y.Z tag and
 # creates a DRAFT GitHub release. The image job then builds and pushes the container image to GHCR with build
-# provenance, the deploy job triggers Coolify (when configured) and the publish job un-drafts the release.
+# provenance and the publish job un-drafts the release. Coolify deploys on its own from the pushed commit.
 on:
   workflow_run:
     workflows: [CI]
@@ -116,33 +116,9 @@ jobs:
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
 
-  deploy:
-    name: Deploy to Coolify
-    needs: [release, image]
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      - name: Trigger the Coolify webhook
-        env:
-          COOLIFY_WEBHOOK_URL: ${{ secrets.COOLIFY_WEBHOOK_URL }}
-          COOLIFY_API_TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
-        run: |
-          if [ -z "$COOLIFY_WEBHOOK_URL" ]; then
-            echo "COOLIFY_WEBHOOK_URL is not set, skipping the deploy."
-            exit 0
-          fi
-          case "$COOLIFY_WEBHOOK_URL" in
-            https://*) ;;
-            *)
-              echo "::error::COOLIFY_WEBHOOK_URL must start with https://"
-              exit 1
-              ;;
-          esac
-          curl -fsS --proto '=https' --max-time 30 -X GET -H "Authorization: Bearer $COOLIFY_API_TOKEN" "$COOLIFY_WEBHOOK_URL" > /dev/null
-
   publish:
     name: Publish release
-    needs: [release, image, deploy]
+    needs: [release, image]
     runs-on: ubuntu-latest
     permissions:
       contents: write # un-draft the release
