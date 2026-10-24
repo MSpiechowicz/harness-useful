@@ -51,7 +51,7 @@
 
 <style>
   .hero {
-    padding-block: 28px var(--space-7);
+    padding-block: var(--section-space);
     border-bottom: 1px solid var(--border-soft);
   }
 

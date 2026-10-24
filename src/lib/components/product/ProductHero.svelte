@@ -1,6 +1,5 @@
 <script lang="ts">
   import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
-  import { GRADIENTS } from '$lib/config/site';
   import { PAGES } from '$lib/content/pages';
   import type { Product } from '$lib/content/types';
   import { MARKS } from './assets';
@@ -11,17 +10,20 @@
 
   let { product }: Props = $props();
 
-  const gradient = $derived(GRADIENTS[product.id]);
+  // "Harness Desktop" → the lockup's dim "harness" and bright "desktop" (shown lowercase, like the app logo).
+  const [brand, ...rest] = $derived(product.name.split(' '));
 </script>
 
 <header class="hero">
   <div class="container">
     <Breadcrumbs items={PAGES[product.id].breadcrumbs} />
 
-    <div class="title-row" style:--bar="linear-gradient(180deg, {gradient[1]}, {gradient[0]})">
+    <!-- The product lockup from harness-useful-logo (renders/<id>/lockup-dark.svg), built from text so the h1 stays real. -->
+    <h1 class="lockup">
       <img class="mark" src={MARKS[product.id]} alt="" width="89" height="79" />
-      <h1>{product.name}</h1>
-    </div>
+      <span class="dim">{brand}</span>
+      <span class="name">{rest.join(' ')}</span>
+    </h1>
 
     <p class="definition">{product.definition}</p>
     <p class="tagline">{product.tagline}</p>
@@ -41,38 +43,36 @@
 
 <style>
   .hero {
-    padding-block: 28px var(--space-7);
+    padding-block: var(--section-space);
     border-bottom: 1px solid var(--border-soft);
   }
 
-  .title-row {
-    display: flex;
-    align-items: stretch;
-    gap: 18px;
+  /* Lockup proportions (lockup-dark.svg): text 40, mark 79 tall, 23 apart, baseline 20 above the mark's bottom. */
+  .lockup {
     margin-top: 36px;
-  }
-
-  .title-row::before {
-    content: '';
-    width: 4px;
-    border-radius: 2px;
-    background: var(--bar);
+    font-family: var(--font-sans);
+    font-size: clamp(30px, 3.6vw, 46px);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-transform: lowercase;
   }
 
   .mark {
-    align-self: center;
-    width: 56px;
-    height: auto;
+    display: inline-block;
+    height: 1.98em;
+    width: auto;
+    margin-right: 0.58em;
+    vertical-align: -0.5em;
   }
 
-  h1 {
-    align-self: center;
-    font-family: var(--font-mono);
-    font-size: clamp(34px, 4.6vw, 60px);
-    font-weight: 800;
-    line-height: 1.04;
-    letter-spacing: -0.05em;
-    color: var(--text-strong);
+  .dim {
+    font-weight: 400;
+    color: #8f8f99;
+  }
+
+  .name {
+    font-weight: 600;
+    color: #ececf0;
   }
 
   .definition {
