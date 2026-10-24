@@ -39,7 +39,10 @@
     margin-bottom: 8px;
     font-family: var(--font-mono);
     font-size: clamp(26px, 3vw, 38px);
+    line-height: 1.1;
     letter-spacing: -0.04em;
+    /* Trim the space above the capitals so the band's top gap reads the same as its bottom one. */
+    text-box: trim-start cap alphabetic;
     color: var(--text-strong);
   }
 
@@ -75,14 +78,15 @@
     border-radius: var(--radius-lg);
   }
 
+  /* Same panels as the rest of the page; only the sign and the border tint tell before from after. */
   .before {
-    background: #140e0c;
-    border: 1px solid #2a1c17;
+    background: var(--panel);
+    border: 1px solid var(--border);
   }
 
   .after {
-    background: #0b1517;
-    border: 1px solid #173238;
+    background: var(--panel);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
   }
 
   .sign {
@@ -92,11 +96,11 @@
   }
 
   .before .sign {
-    color: #f97316;
+    color: #f87171;
   }
 
   .after .sign {
-    color: #38bdf8;
+    color: var(--accent);
   }
 
   .text {
@@ -105,12 +109,12 @@
   }
 
   .before .text {
-    color: #b7a79f;
+    color: var(--muted);
   }
 
   .after .text {
     flex: 1;
-    color: #e6f1ee;
+    color: var(--text-strong);
   }
 
   .tool {
