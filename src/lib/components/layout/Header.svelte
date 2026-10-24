@@ -2,7 +2,7 @@
   import { page } from '$app/state';
   import { ORG } from '$lib/config/site';
   import Logo from './Logo.svelte';
-  import { PAGE_LINKS } from './nav';
+  import { ALL_LINKS } from './nav';
 
   const pathname = $derived(page.url.pathname);
 
@@ -13,17 +13,17 @@
 
 <header class="site-header">
   <div class="container bar">
-    <a class="brand" href="/" aria-current={current('/')}>
+    <a class="brand" href="/">
       <Logo />
       <span><span class="brand-dim">harness</span> useful</span>
     </a>
 
     <nav aria-label="Main">
       <ul>
-        {#each PAGE_LINKS as link (link.href)}
+        {#each ALL_LINKS as link (link.href)}
           <li><a href={link.href} aria-current={current(link.href)}>{link.label}</a></li>
         {/each}
-        <li><a href={ORG.github} rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+        <li><a href={ORG.github} rel="noopener">GitHub</a></li>
         <li><a class="install" href="/#install">Install</a></li>
       </ul>
     </nav>
