@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/MSpiechowicz/harness-useful/compare/v1.0.0...v1.1.0) (2026-10-24)
+
+
+### Bug Fixes
+
+* **product-pages:** app logo lockup, no side bar, homepage header spacing ([20e1417](https://github.com/MSpiechowicz/harness-useful/commit/20e1417bbabe87f5d3d448a94d691d5804ec8685))
+* **product-pages:** one card style, equal privacy rows, no screenshots section ([92ba95f](https://github.com/MSpiechowicz/harness-useful/commit/92ba95ff8cc8372812581bdf1a9b59d2c31fcbc7))
+
+
+### Features
+
+* **product-pages:** harness cards, non-scrolling commands, full-width lists ([d912818](https://github.com/MSpiechowicz/harness-useful/commit/d912818046d71e370065cf6f553694dc3273776e))
+
 # 1.0.0 (2026-10-24)
 
 
