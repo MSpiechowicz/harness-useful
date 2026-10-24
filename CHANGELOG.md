@@ -1,3 +1,11 @@
+## [1.1.2](https://github.com/MSpiechowicz/harness-useful/compare/v1.1.1...v1.1.2) (2026-10-24)
+
+
+### Bug Fixes
+
+* **mobile:** one-row tool card headers, fixed-size flow caption; drop Coolify deploy job ([922ffe0](https://github.com/MSpiechowicz/harness-useful/commit/922ffe02db0fb714a4de2d934d647cbd2b9404a4))
+* **skills-demo:** stage tabs in two rows of three on phones ([c730d41](https://github.com/MSpiechowicz/harness-useful/commit/c730d414b563efa4fde36286778920f29730ebed))
+
 ## [1.1.1](https://github.com/MSpiechowicz/harness-useful/compare/v1.1.0...v1.1.1) (2026-10-24)
 
 
