@@ -314,10 +314,10 @@ export const DTABS: DashboardTab[] = [
 
 /** Four capability cards under the dashboard showcase. */
 export const DASHBOARD_POINTS = [
-  { label: 'per prompt', text: 'What each request consumed, call by call, subagents included.' },
-  { label: 'per branch', text: 'What each piece of work cost, with its commits and pull requests.' },
-  { label: 'model drift', text: 'Whether a model got slower, clumsier or more error-prone than usual.' },
-  { label: 'for agents too', text: 'An MCP server lets agents read budgets and plan limits before long work.' },
+  { label: 'Per prompt', icon: 'coins', text: 'What each request consumed, call by call, subagents included.' },
+  { label: 'Per branch', icon: 'gitBranch', text: 'What each piece of work cost, with its commits and pull requests.' },
+  { label: 'Model drift', icon: 'trendingUp', text: 'Whether a model got slower, clumsier or more error-prone than usual.' },
+  { label: 'For agents too', icon: 'bot', text: 'An MCP server lets agents read budgets and plan limits before long work.' },
 ] as const;
 
 // README paths: Desktop "Hooks" (harness-hooks/hooks), Memory "Where data lives", Dashboard "Privacy".

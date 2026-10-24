@@ -1,4 +1,4 @@
-// Lucide icon geometry used by the Desktop demo (24 x 24 grid, stroke 2), copied from the approved board.
+// Lucide icon geometry used by the homepage demos and cards (24 x 24 grid, stroke 2), copied from the approved board.
 export type IconNode = [tag: 'path' | 'circle' | 'rect', attrs: Record<string, string | number>][];
 
 const path = (d: string): IconNode[number] => ['path', { d }];
@@ -105,6 +105,8 @@ export const ICONS = {
     path('M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'),
   ],
   x: [path('M18 6 6 18'), path('m6 6 12 12')],
+  trendingUp: [path('M16 7h6v6'), path('m22 7-8.5 8.5-5-5L2 17')],
+  bot: [path('M12 8V4H8'), rect(4, 8, 16, 12, 2), path('M2 14h2'), path('M20 14h2'), path('M15 13v2'), path('M9 13v2')],
 } satisfies Record<string, IconNode>;
 
 export type IconName = keyof typeof ICONS;
