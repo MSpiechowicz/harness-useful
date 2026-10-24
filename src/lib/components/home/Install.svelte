@@ -16,7 +16,6 @@
         label={item.label.replace(/^# /, '')}
         prompt={item.prompt}
         lang={item.prompt === '>' ? 'powershell' : 'sh'}
-        wrap
       />
     {/each}
   </div>
@@ -56,10 +55,5 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-
-  /* 13px keeps the 138-character Windows command on one line across the full container. */
-  .commands :global(.code-block) {
-    font-size: 13px;
   }
 </style>

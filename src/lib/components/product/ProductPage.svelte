@@ -182,10 +182,6 @@
     list-style: none;
   }
 
-  .video {
-    max-width: 960px;
-  }
-
   .cta {
     display: flex;
     flex-wrap: wrap;

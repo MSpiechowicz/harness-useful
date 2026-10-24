@@ -16,7 +16,6 @@
   ul {
     display: grid;
     gap: 10px;
-    max-width: 860px;
     margin: 0;
     padding: 0;
     list-style: none;

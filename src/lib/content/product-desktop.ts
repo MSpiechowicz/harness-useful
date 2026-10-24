@@ -50,20 +50,34 @@ export const DESKTOP: Product = {
 
   // README "Supported harnesses" table.
   harnesses: [
-    { name: 'Oh My Pi (omp)', support: 'Supported. Verified against 18.6.1.' },
-    { name: 'Pi (pi)', support: 'Supported. Tested with PI 1.1. Other versions show as untested.' },
+    { name: 'Oh My Pi (omp)', support: 'Supported. Verified against 18.6.1.', status: 'Supported', note: 'Verified against 18.6.1.' },
+    {
+      name: 'Pi (pi)',
+      support: 'Supported. Tested with PI 1.1. Other versions show as untested.',
+      status: 'Supported',
+      note: 'Tested with PI 1.1. Other versions show as untested.',
+    },
     {
       name: 'OpenCode (opencode)',
       support:
         'Partly supported. Works: detection, configuration, extensions, sessions, Harness Skills install and MCP entries in Recommended setup, and Share setup. Chat is a preview.',
+      status: 'Partly supported',
+      works: ['Detection', 'Configuration', 'Extensions', 'Sessions', 'Skills and MCP in Recommended setup', 'Share setup'],
+      note: 'Chat is a preview.',
     },
     {
       name: 'Claude Code (claude)',
       support: 'Supported, chat as a preview. Works: detection, configuration, extensions, sessions, Recommended setup and Share setup.',
+      status: 'Supported',
+      works: ['Detection', 'Configuration', 'Extensions', 'Sessions', 'Recommended setup', 'Share setup'],
+      note: 'Chat is a preview.',
     },
     {
       name: 'Codex (codex)',
       support: 'Supported, chat as a preview. Works: detection, configuration, extensions, sessions, Recommended setup and Share setup.',
+      status: 'Supported',
+      works: ['Detection', 'Configuration', 'Extensions', 'Sessions', 'Recommended setup', 'Share setup'],
+      note: 'Chat is a preview.',
     },
   ],
 

@@ -8,11 +8,11 @@
     lang?: string;
     /** Decorative prompt shown before each line and excluded from selection and copy. */
     prompt?: string;
-    /** Wrap long lines instead of scrolling sideways (the copied text is unchanged). */
+    /** Wrap long lines instead of scrolling sideways (the copied text is unchanged). On by default. */
     wrap?: boolean;
   }
 
-  let { code, label, lang = 'sh', prompt = '$', wrap = false }: Props = $props();
+  let { code, label, lang = 'sh', prompt = '$', wrap = true }: Props = $props();
 
   const lines = $derived(code.split('\n'));
 
@@ -67,7 +67,8 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     font-family: var(--font-mono);
-    font-size: 14px;
+    /* 13px fits the longest one-line install command (about 140 characters) across the full container. */
+    font-size: 13px;
   }
 
   .label {

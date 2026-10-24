@@ -29,6 +29,16 @@ export interface InstallStep {
   command: string;
 }
 
+/** One harness or tool row of a product page. `support` is the plain sentence (Markdown twin, SEO); the optional
+ *  fields let the page show it as a card with a status badge, the working features as tags and a short note. */
+export interface HarnessEntry {
+  name: string;
+  support: string;
+  status?: 'Supported' | 'Partly supported';
+  works?: string[];
+  note?: string;
+}
+
 export interface ProductVideo {
   src: string;
   poster: string;
@@ -47,7 +57,7 @@ export interface Product {
   /** One-sentence definition (answer-first lead). */
   definition: string;
   features: { title: string; text: string }[];
-  harnesses: { name: string; support: string }[];
+  harnesses: HarnessEntry[];
   platforms: string[];
   install: InstallStep[];
   privacy: string[];
