@@ -139,6 +139,7 @@
     border: 1px solid;
     border-radius: var(--radius-md);
     text-align: center;
+    white-space: nowrap;
     transition:
       background 0.45s ease,
       color 0.45s ease;
@@ -323,5 +324,12 @@
     margin-top: 16px;
     font-size: 11.5px;
     color: var(--subtle);
+  }
+
+  /* Phones: six columns are too narrow for "· implement" on one line, so the stages run in two rows of three. */
+  @media (max-width: 640px) {
+    .stages {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 </style>
