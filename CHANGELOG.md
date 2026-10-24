@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/MSpiechowicz/harness-useful/compare/v1.1.0...v1.1.1) (2026-10-24)
+
+
+### Bug Fixes
+
+* **hero:** show smaller live chips on phones instead of hiding them ([2568ce8](https://github.com/MSpiechowicz/harness-useful/commit/2568ce8f889bcb9115ebf8f0542a6e87900155ec))
+
 # [1.1.0](https://github.com/MSpiechowicz/harness-useful/compare/v1.0.0...v1.1.0) (2026-10-24)
 
 
