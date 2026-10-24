@@ -15,7 +15,7 @@ describe('og cards', () => {
   });
 
   test('card text: home h1, product names, eyebrow with the product', () => {
-    expect(ogCard('home').title).toBe('Your coding agent, upgraded.');
+    expect(ogCard('home').title).toBe('Local tools for your coding agent.');
     expect(ogCard('desktop').title).toBe('Harness Desktop');
     expect(ogCard('desktop').eyebrow).toBe('harness useful / desktop');
     expect(ogCard('dashboard').gradient).toEqual(['#F59E0B', '#F472B6']);

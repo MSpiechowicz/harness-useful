@@ -11,8 +11,8 @@ const TEXT: Record<RouteId, PageText> = {
     title: 'Harness Useful – tools for coding-agent harnesses',
     description:
       'Harness Useful is a family of four open-source, local tools for coding-agent CLIs: a desktop window, a workflow, shared memory and a usage meter.',
-    ogTitle: 'Harness Useful: your coding agent, upgraded',
-    ogDescription: 'Window, workflow, memory, meter. Four open-source local tools around the coding-agent CLI you already run.',
+    ogTitle: 'Harness Useful: local tools for your coding agent',
+    ogDescription: 'Desktop, skills, memory, dashboard. Four open-source local tools around the coding-agent CLI you already run.',
     crumb: 'Home',
   },
   desktop: {

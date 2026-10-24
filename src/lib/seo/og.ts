@@ -30,8 +30,8 @@ export function ogCard(target: OgTarget): OgCard {
   if (target === 'home') {
     return {
       eyebrow: 'harness useful',
-      title: HERO.h1[0],
-      description: HERO.h1[1],
+      title: HERO.h1.join(' '),
+      description: HERO.products,
       gradient: GRADIENTS.family,
     };
   }

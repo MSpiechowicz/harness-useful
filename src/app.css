@@ -174,16 +174,6 @@ a:hover {
 
 /* Keyframes shared with the homepage demos (names match the approved board) */
 
-@keyframes hfFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
 @keyframes hfPulse {
   0% {
     box-shadow: 0 0 0 0 rgb(94 234 196 / 45%);

@@ -16,10 +16,12 @@ export const HOME_NAV = [
 ] as const;
 
 export const HERO = {
-  eyebrow: '// local tools for coding-agent harnesses',
+  eyebrow: '// open source · runs locally',
   /** h1 lines; the second one is the teal line. */
-  h1: ['Your coding agent, upgraded.', 'Window, workflow, memory, meter.'],
-  lead: 'Four open-source tools around the CLI you already run (Oh My Pi, PI, OpenCode, Claude Code or Codex) that make every session better informed, better reviewed and cheaper than the last.',
+  h1: ['Local tools for', 'your coding agent.'],
+  /** The four products in one line (OG card description). */
+  products: 'Desktop, skills, memory, dashboard.',
+  lead: 'A desktop app, skills, shared memory and a usage dashboard for the CLI you already run: Claude Code, Codex, OpenCode, PI or Oh My Pi.',
   ctas: [
     { label: '$ install desktop', href: '#install' },
     { label: '▶ watch a prompt travel', href: '#flow' },
@@ -34,12 +36,39 @@ export const HERO = {
     img: 'd-hero-chat-2026.webp',
     alt: 'Current Harness Desktop chat: the top bar with Approvals, Memory, Thinking, Cost and Stats, a proposed memory note with Skip, Edit and Save, and three subagents running live',
   },
+  /** Floating cards over the screenshot. Each one cycles through its events; the first is the static frame. */
   chips: [
-    { title: 'hook · sessionStart', text: 'Search Harness Memory first', tool: 'desktop' },
-    { title: 'memory · recalled 2 times', text: 'Release build fails on macOS…', tool: 'memory' },
-    { title: 'dashboard · this week', text: '$0.121 / prompt · 90% from cache', tool: 'dashboard' },
-    { title: 'skills · plan', text: '✓ approved by you', tool: 'skills' },
+    {
+      tool: 'desktop',
+      events: [
+        { title: 'hook · sessionStart', text: 'Search Harness Memory first' },
+        { title: 'hook · preToolUse', text: 'Block rm -rf outside the repo' },
+      ],
+    },
+    {
+      tool: 'memory',
+      events: [
+        { title: 'memory · recalled 2 times', text: 'Release build fails on macOS…' },
+        { title: 'memory · saved', text: 'Source files stay under 500 lines' },
+      ],
+    },
+    {
+      tool: 'dashboard',
+      events: [
+        { title: 'dashboard · this week', text: '$0.121 / prompt · 90% from cache' },
+        { title: 'dashboard · today', text: '$1.84 · 14 sessions' },
+      ],
+    },
+    {
+      tool: 'skills',
+      events: [
+        { title: 'skills · plan', text: '✓ approved by you' },
+        { title: 'skills · review', text: '✓ 0 findings, tests pass' },
+      ],
+    },
   ],
+  /** Order in which the chips light up, following a prompt: hook → memory → skills → dashboard. */
+  chipOrder: [0, 1, 3, 2],
 } as const;
 
 /** Tools in the scrolling ticker under the hero (decorative, aria-hidden). */
