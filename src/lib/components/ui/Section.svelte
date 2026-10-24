@@ -43,11 +43,10 @@
 
 <style>
   section {
-    padding-block: var(--space-9) var(--space-8);
+    padding-block: var(--section-space);
   }
 
   section.alt {
-    padding-block: 88px;
     border-top: 1px solid var(--border-soft);
     background: var(--panel-alt);
   }

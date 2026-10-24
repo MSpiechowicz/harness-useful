@@ -58,7 +58,8 @@
     display: flex;
     flex-direction: column;
     gap: 112px;
-    padding-block: 96px 24px;
+    /* Bottom: this + the next section's --section-space matches the 112px gap between product blocks. */
+    padding-block: var(--section-space) calc(112px - var(--section-space));
   }
 
   .more {

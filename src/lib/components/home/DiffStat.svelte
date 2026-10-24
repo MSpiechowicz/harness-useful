@@ -32,7 +32,7 @@
   }
 
   .inner {
-    padding-block: 88px;
+    padding-block: var(--section-space);
   }
 
   h2 {

@@ -27,7 +27,7 @@
     flex-wrap: wrap;
     gap: 40px;
     align-items: center;
-    padding-block: 96px;
+    padding-block: var(--section-space);
   }
 
   .copy {

@@ -101,7 +101,7 @@
   }
 
   .inner {
-    padding-block: 96px;
+    padding-block: var(--section-space);
   }
 
   .tag {

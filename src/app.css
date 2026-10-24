@@ -52,6 +52,9 @@
   /* Layout */
   --container: 1240px;
   --gutter: 24px;
+  /* Vertical padding of a page section, the same above and below so every gap between sections matches
+     (two plain sections stack to twice this). */
+  --section-space: 64px;
 
   /* Fonts */
   --font-sans: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -274,6 +277,12 @@ a:hover {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --section-space: 48px;
   }
 }
 

@@ -98,7 +98,7 @@
 
 <style>
   .flow {
-    padding-block: 96px 72px;
+    padding-block: var(--section-space);
   }
 
   .head {
@@ -366,12 +366,6 @@
       align-items: start;
       height: auto;
       min-height: 420px;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .flow {
-      padding-block: 72px 56px;
     }
   }
 </style>
