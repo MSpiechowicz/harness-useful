@@ -16,22 +16,24 @@
         label={item.label.replace(/^# /, '')}
         prompt={item.prompt}
         lang={item.prompt === '>' ? 'powershell' : 'sh'}
+        wrap
       />
     {/each}
   </div>
 </section>
 
 <style>
+  /* Stacked: copy on top, then both commands across the full width so each fits on one line at desktop width
+     (narrower screens wrap them instead of scrolling). */
   .install {
     display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-    align-items: center;
+    flex-direction: column;
+    gap: 28px;
     padding-block: var(--section-space);
   }
 
   .copy {
-    flex: 1 1 380px;
+    max-width: 760px;
   }
 
   h2 {
@@ -50,10 +52,14 @@
   }
 
   .commands {
-    flex: 1.2 1 520px;
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  /* 13px keeps the 138-character Windows command on one line across the full container. */
+  .commands :global(.code-block) {
+    font-size: 13px;
   }
 </style>

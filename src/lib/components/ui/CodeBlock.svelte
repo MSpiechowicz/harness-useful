@@ -8,9 +8,11 @@
     lang?: string;
     /** Decorative prompt shown before each line and excluded from selection and copy. */
     prompt?: string;
+    /** Wrap long lines instead of scrolling sideways (the copied text is unchanged). */
+    wrap?: boolean;
   }
 
-  let { code, label, lang = 'sh', prompt = '$' }: Props = $props();
+  let { code, label, lang = 'sh', prompt = '$', wrap = false }: Props = $props();
 
   const lines = $derived(code.split('\n'));
 
@@ -38,7 +40,7 @@
   }
 </script>
 
-<div class="code-block">
+<div class="code-block" class:wrap>
   {#if label}<p class="label"># {label}</p>{/if}
 
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -78,6 +80,11 @@
     padding: 16px 18px;
     overflow-x: auto;
     white-space: pre;
+  }
+
+  .wrap pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 
   .label + pre {
