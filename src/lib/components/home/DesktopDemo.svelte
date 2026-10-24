@@ -80,7 +80,8 @@
   .desktop {
     position: relative;
     height: 460px;
-    min-width: 700px;
+    /* Fits the ~670px demo column at full desktop width; narrower columns scale it down (ProductBlock). */
+    min-width: 660px;
     display: flex;
     flex-direction: column;
     overflow: hidden;

@@ -14,6 +14,18 @@
   let { block, reverse = false, demo }: Props = $props();
 
   const name = $derived(PRODUCTS[block.id].name);
+
+  // Scale-to-fit: a demo has a fixed minimum width (its CSS min-width); when the column is narrower, the whole demo
+  // shrinks proportionally instead of scrolling sideways. At full desktop width every demo fits at scale 1.
+  let available = $state(0);
+  let minWidth = $state(0);
+  let height = $state(0);
+  const scale = $derived(available && minWidth > available ? available / minWidth : 1);
+
+  function measure(node: HTMLElement) {
+    const demo = node.firstElementChild;
+    if (demo) minWidth = parseFloat(getComputedStyle(demo).minWidth) || 0;
+  }
 </script>
 
 <article class="block" class:reverse style:--tone={block.color} aria-labelledby="{block.id}-h">
@@ -25,7 +37,9 @@
     <ul class="bullets">
       {#each block.bullets as item (item.h)}
         <li>
-          <span class="tick" aria-hidden="true">✓</span>
+          <span class="tick" aria-hidden="true">
+            <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5.2 4.2 7.4 8 2.8" /></svg>
+          </span>
           <span><b>{item.h}</b><span class="detail">{item.p}</span></span>
         </li>
       {/each}
@@ -33,12 +47,22 @@
 
     <p class="links">
       <a href="/{block.id}">Read more about {name}</a>
-      <a href={block.href} rel="noopener">README ↗</a>
+      <a href={block.href} rel="noopener">README</a>
     </p>
   </div>
 
   <div class="demo-col">
-    <div class="demo-scroll" aria-hidden="true">{@render demo()}</div>
+    <div class="demo-fit" aria-hidden="true" bind:clientWidth={available} style:height={scale < 1 ? `${height * scale}px` : undefined}>
+      <div
+        class="demo-inner"
+        {@attach measure}
+        bind:offsetHeight={height}
+        style:width={scale < 1 ? `${minWidth}px` : undefined}
+        style:transform={scale < 1 ? `scale(${scale})` : undefined}
+      >
+        {@render demo()}
+      </div>
+    </div>
     <p class="note" aria-hidden="true">{block.note}</p>
   </div>
 </article>
@@ -115,9 +139,15 @@
     margin-top: 3px;
     border: 1px solid var(--tone);
     border-radius: 5px;
-    font-family: var(--font-mono);
-    font-size: 11px;
     color: var(--tone);
+  }
+
+  .tick svg {
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
   b {
@@ -146,8 +176,12 @@
     min-width: 0;
   }
 
-  .demo-scroll {
-    overflow-x: auto;
+  .demo-fit {
+    overflow: hidden;
+  }
+
+  .demo-inner {
+    transform-origin: top left;
   }
 
   .note {
