@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { COLORS } from '$lib/config/site';
   import type { HarnessEntry, Product } from '$lib/content/types';
 
   interface Props {
@@ -28,7 +27,7 @@
   const body = (entry: HarnessEntry) => entry.note ?? entry.support;
 </script>
 
-<ul class="harnesses" aria-label={label} style:--tone={COLORS[product.id]}>
+<ul class="harnesses" aria-label={label}>
   {#each product.harnesses as entry (entry.name)}
     {@const name = split(entry.name)}
     <li class="card">
@@ -83,7 +82,7 @@
     position: absolute;
     inset: 0 0 auto;
     height: 2px;
-    background: linear-gradient(90deg, var(--tone), transparent 70%);
+    background: linear-gradient(90deg, var(--accent), transparent 70%);
   }
 
   .head {
@@ -93,9 +92,12 @@
     gap: 8px 10px;
   }
 
+  /* Titles match the feature cards above (mono, 16px, bold). */
   h3 {
+    font-family: var(--font-mono);
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--text-strong);
   }
 
@@ -106,17 +108,18 @@
     background: var(--panel-alt);
     font-family: var(--font-mono);
     font-size: 12px;
-    color: var(--tone);
+    color: var(--accent);
   }
 
   .status {
     margin-left: auto;
     padding: 3px 9px;
-    border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+    /* A fixed status colour (the site teal), not the product accent, so "Supported" reads the same on every page. */
+    border: 1px solid color-mix(in srgb, #5eeac4 40%, var(--border));
     border-radius: 999px;
     font-family: var(--font-mono);
     font-size: 11px;
-    color: var(--accent);
+    color: #5eeac4;
     white-space: nowrap;
   }
 

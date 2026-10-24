@@ -1,11 +1,9 @@
 <script lang="ts">
   import FaqList from '$lib/components/ui/FaqList.svelte';
   import Section from '$lib/components/ui/Section.svelte';
-  import Shot from '$lib/components/ui/Shot.svelte';
   import Video from '$lib/components/ui/Video.svelte';
   import type { ProductId } from '$lib/config/site';
   import { PRODUCTS } from '$lib/content/products';
-  import { SHOTS } from './assets';
   import FamilyLinks from './FamilyLinks.svelte';
   import HarnessTable from './HarnessTable.svelte';
   import InstallSteps from './InstallSteps.svelte';
@@ -19,7 +17,6 @@
   let { id }: Props = $props();
 
   const product = $derived(PRODUCTS[id]);
-  const shots = $derived(SHOTS[id]);
   const reads = $derived(id === 'dashboard');
 
   const accentHover = $derived(`color-mix(in srgb, ${product.color} 55%, white)`);
@@ -87,16 +84,6 @@
     <FamilyLinks {id} />
   </Section>
 
-  <Section id="screenshots" title="{product.name} screenshots" eyebrow="$ {id} --screenshots">
-    <ul class="shots">
-      {#each shots as shot (shot.caption)}
-        <li>
-          <Shot src={shot.src} alt={shot.alt} caption={shot.caption} sizes="(min-width: 1240px) 600px, (min-width: 800px) 50vw, 100vw" />
-        </li>
-      {/each}
-    </ul>
-  </Section>
-
   {#if product.video}
     <Section id="tour" title="Watch the {product.name} tour" eyebrow="$ {id} --tour">
       <div class="video">
@@ -143,12 +130,22 @@
     list-style: none;
   }
 
+  /* Same card language as the harness cards and the homepage cards: panel, a fading accent along the top. */
   .features li {
+    position: relative;
+    overflow: hidden;
     padding: 18px 20px;
     border: 1px solid var(--border);
-    border-top: 2px solid var(--accent);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     background: var(--panel);
+  }
+
+  .features li::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent 70%);
   }
 
   .features h3 {
@@ -171,15 +168,6 @@
     margin-top: 18px;
     font-size: 15px;
     color: var(--muted);
-  }
-
-  .shots {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
-    gap: 24px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
   }
 
   .cta {

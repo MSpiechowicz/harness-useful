@@ -8,13 +8,18 @@
 
 <ul>
   {#each items as item (item)}
-    <li>{item}</li>
+    <li>
+      <svg class="tick" width="14" height="14" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 5.2 4.2 7.4 8 2.8" /></svg>
+      <span>{item}</span>
+    </li>
   {/each}
 </ul>
 
 <style>
+  /* Every row as tall as the tallest (1fr rows), text centred, so short and two-line points line up as one block. */
   ul {
     display: grid;
+    grid-auto-rows: 1fr;
     gap: 10px;
     margin: 0;
     padding: 0;
@@ -22,8 +27,10 @@
   }
 
   li {
-    position: relative;
-    padding: 14px 18px 14px 44px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--panel);
@@ -32,13 +39,12 @@
     color: var(--text);
   }
 
-  li::before {
-    content: '✓';
-    position: absolute;
-    top: 14px;
-    left: 18px;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    color: var(--accent);
+  .tick {
+    flex-shrink: 0;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 </style>
