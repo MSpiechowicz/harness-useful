@@ -244,51 +244,6 @@ a:hover {
   }
 }
 
-@keyframes nfDash3 {
-  from {
-    stroke-dashoffset: 103;
-  }
-  to {
-    stroke-dashoffset: 3;
-  }
-}
-
-@keyframes nfDash4 {
-  from {
-    stroke-dashoffset: 104;
-  }
-  to {
-    stroke-dashoffset: 4;
-  }
-}
-
-@keyframes nfDash9 {
-  from {
-    stroke-dashoffset: 109;
-  }
-  to {
-    stroke-dashoffset: 9;
-  }
-}
-
-@keyframes nfDash14 {
-  from {
-    stroke-dashoffset: 114;
-  }
-  to {
-    stroke-dashoffset: 14;
-  }
-}
-
-@keyframes nfDash30 {
-  from {
-    stroke-dashoffset: 130;
-  }
-  to {
-    stroke-dashoffset: 30;
-  }
-}
-
 @keyframes nfRing {
   0% {
     box-shadow: 0 0 0 0 currentcolor;

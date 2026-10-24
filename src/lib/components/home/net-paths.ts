@@ -14,16 +14,17 @@ export interface NetLink {
   to: readonly [number, number];
 }
 
+// Single links leave and enter at the middle of a card border; the two lanes of a pair sit symmetric around it.
 export const NET_LINKS: readonly NetLink[] = [
-  { d: 'M 206 271 C 255 271, 255 271, 304 271', from: [206, 271], to: [304, 271] },
-  { d: 'M 476 271 C 530 271, 530 271, 584 271', from: [476, 271], to: [584, 271] },
+  { d: 'M 206 270 C 255 270, 255 270, 304 270', from: [206, 270], to: [304, 270] },
+  { d: 'M 476 280 C 530 280, 530 280, 584 280', from: [476, 280], to: [584, 280] },
   { d: 'M 652 253 C 652 186, 652 186, 652 119', from: [652, 253], to: [652, 119] },
   { d: 'M 688 119 C 688 186, 688 186, 688 253', from: [688, 119], to: [688, 253] },
-  { d: 'M 756 268 C 822 268, 822 158, 889 158', from: [756, 268], to: [889, 158] },
-  { d: 'M 889 180 C 822 180, 822 284, 756 284', from: [889, 180], to: [756, 284] },
-  { d: 'M 756 300 C 822 300, 822 402, 889 402', from: [756, 300], to: [889, 402] },
-  { d: 'M 975 437 C 975 540, 390 540, 390 307', from: [975, 437], to: [390, 307] },
-  { d: 'M 304 291 C 255 291, 255 291, 206 291', from: [304, 291], to: [206, 291] },
+  { d: 'M 756 270 C 822 270, 822 158, 889 158', from: [756, 270], to: [889, 158] },
+  { d: 'M 889 178 C 822 178, 822 290, 756 290', from: [889, 178], to: [756, 290] },
+  { d: 'M 670 307 C 670 410, 760 410, 889 410', from: [670, 307], to: [889, 410] },
+  { d: 'M 975 437 C 975 516, 390 516, 390 307', from: [975, 437], to: [390, 307] },
+  { d: 'M 304 290 C 255 290, 255 290, 206 290', from: [304, 290], to: [206, 290] },
 ];
 
 /** Top-left corner of each node card (172 x 54) in diagram space. */
@@ -36,29 +37,7 @@ export const NET_NODE_POS: Record<NetNode['key'], { left: number; top: number }>
   dashboard: { left: 889, top: 383 },
 };
 
-/** Two faint, slow comets per link run all the time; their phase is spread across the links. */
-export function idleDelays(link: number): [string, string] {
-  return [(0 - link * 0.37).toFixed(2), (-2.6 - link * 0.37).toFixed(2)];
+/** Two light packets drift along every idle link; their phase is spread across the links. */
+export function packetDelays(link: number): [string, string] {
+  return [`${(-link * 0.7).toFixed(1)}s`, `${(-3 - link * 0.7).toFixed(1)}s`];
 }
-
-export interface CometLayer {
-  /** Visible length of the dash in pathLength units; also selects the nfDash<length> keyframe. */
-  length: 30 | 14 | 4 | 3;
-  width: number;
-  opacity: number;
-  blur: boolean;
-  /** White core instead of the link gradient. */
-  white: boolean;
-}
-
-/** Tapered comet of a hot link: glow halo, tail, body, bloom and white core. */
-export const COMET_LAYERS: readonly CometLayer[] = [
-  { length: 30, width: 12, opacity: 0.32, blur: true, white: false },
-  { length: 30, width: 2.4, opacity: 0.38, blur: false, white: false },
-  { length: 14, width: 3.8, opacity: 0.8, blur: false, white: false },
-  { length: 4, width: 7, opacity: 1, blur: true, white: false },
-  { length: 3, width: 3, opacity: 0.95, blur: false, white: true },
-];
-
-/** Two comets per hot link, half a loop apart. */
-export const COMET_DELAYS = ['0s', '-0.8s'] as const;

@@ -184,13 +184,8 @@ export function memoryFrame(tick: number): MemoryFrame {
 // --- Life of a prompt: the living network ---
 
 export interface NetNodeFrame {
-  /** Border gradient stops (CSS colours). */
-  b1: string;
-  b2: string;
-  /** box-shadow of the node card. */
-  glow: string;
-  /** The receiving node blooms a ring. */
-  ring: boolean;
+  /** Sender of the current step (soft glow), receiver (lights up fully as the line lands) or neither. */
+  role: 'from' | 'to' | null;
 }
 
 export interface NetFrame {
@@ -200,8 +195,6 @@ export interface NetFrame {
   caption: { title: string; sub: string; color: string; anim: 'nfCapA' | 'nfCapB' };
   num: string;
   total: string;
-  /** Progress bar width, e.g. `33.3%`. */
-  progress: string;
 }
 
 export function netFrame(step: number): NetFrame {
@@ -212,17 +205,7 @@ export function netFrame(step: number): NetFrame {
   const nodes = {} as Record<NetNode['key'], NetNodeFrame>;
 
   for (const key of Object.keys(NET_COLORS) as NetNode['key'][]) {
-    const color = NET_COLORS[key];
-    const isTo = key === to;
-    const isFrom = key === from;
-    const lit = isTo || isFrom;
-
-    nodes[key] = {
-      b1: lit ? color : 'rgba(255,255,255,.14)',
-      b2: lit ? `${color}55` : 'rgba(255,255,255,.04)',
-      glow: isTo ? `0 0 0 1px ${color}55, 0 0 40px ${color}40` : isFrom ? `0 0 24px ${color}30` : '0 10px 30px rgba(0,0,0,.4)',
-      ring: isTo,
-    };
+    nodes[key] = { role: key === to ? 'to' : key === from ? 'from' : null };
   }
 
   return {
@@ -231,6 +214,5 @@ export function netFrame(step: number): NetFrame {
     caption: { title: hop.t, sub: hop.s, color: NET_COLORS[from], anim: index % 2 ? 'nfCapB' : 'nfCapA' },
     num: String(index + 1).padStart(2, '0'),
     total: String(count).padStart(2, '0'),
-    progress: `${(((index + 1) / count) * 100).toFixed(1)}%`,
   };
 }

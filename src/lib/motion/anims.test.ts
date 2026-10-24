@@ -130,18 +130,14 @@ describe('netFrame', () => {
     expect(frame.link).toBe(0);
     expect(frame.num).toBe('01');
     expect(frame.total).toBe('09');
-    expect(frame.progress).toBe('11.1%');
     expect(frame.caption).toMatchObject({ title: 'you → Harness Desktop', color: '#F2F7F5', anim: 'nfCapA' });
-    expect(frame.nodes.desktop.ring).toBe(true);
-    expect(frame.nodes.you.ring).toBe(false);
-    expect(frame.nodes.desktop.glow).toBe('0 0 0 1px #7DD3FC55, 0 0 40px #7DD3FC40');
-    expect(frame.nodes.you.glow).toBe('0 0 24px #F2F7F530');
-    expect(frame.nodes.cli.glow).toBe('0 10px 30px rgba(0,0,0,.4)');
+    expect(frame.nodes.desktop.role).toBe('to');
+    expect(frame.nodes.you.role).toBe('from');
+    expect(frame.nodes.cli.role).toBeNull();
   });
 
-  test('caption animation alternates and the last hop fills the progress bar', () => {
+  test('caption animation alternates and the last hop runs link 7', () => {
     expect(netFrame(1).caption.anim).toBe('nfCapB');
-    expect(netFrame(8).progress).toBe('100.0%');
     expect(netFrame(8).link).toBe(7);
   });
 

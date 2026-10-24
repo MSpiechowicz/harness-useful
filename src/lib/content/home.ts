@@ -93,7 +93,7 @@ export const SECTIONS = {
   flow: {
     prompt: '$ harness trace --prompt "Handle empty config input"',
     title: 'The life of one prompt in the family',
-    lead: 'Follow a single request through the family: light runs along every connection, and the hop happening now runs hot.',
+    lead: 'Follow a single request through the family: light runs along every connection, and the step happening now lights up.',
   },
   diff: {
     title: 'git diff --stat your-workflow',

@@ -1,26 +1,28 @@
 <script lang="ts">
   import { NET_COLORS, NET_ENDS } from '$lib/content/home-net';
-  import { COMET_DELAYS, COMET_LAYERS, NET_HEIGHT, NET_LINKS, NET_WIDTH, idleDelays } from './net-paths';
+  import { NET_HEIGHT, NET_LINKS, NET_WIDTH, packetDelays } from './net-paths';
 
   interface Props {
-    /** Index of the link running hot (Hop.link of the current hop). */
+    /** Index of the link running hot (Hop.link of the current step). */
     link: number;
   }
 
   let { link }: Props = $props();
 
   const gradient = (index: number) => `url(#nf-g${index})`;
+  const hot = $derived(NET_LINKS[link]);
 </script>
 
 <!--
-  The family as a living network (board: gen_net2.py). Every link carries slow idle comets; the link of the current hop
-  fades up (opacity .7s) as a hot layer with a lit track and two tapered comets. Purely decorative: the hop text lives
-  outside the SVG.
+  The family as a living network. Every link is a quiet wire in its sender-to-receiver gradient with two light packets
+  drifting along it. The link of the current step is re-mounted on every step: it draws itself from sender to receiver,
+  then a bright pulse keeps running along it. Purely decorative: the step text lives outside the SVG.
 -->
 <svg class="net-svg" width={NET_WIDTH} height={NET_HEIGHT} viewBox="0 0 {NET_WIDTH} {NET_HEIGHT}" aria-hidden="true" focusable="false">
   <defs>
-    <filter id="nf-blur" x="-10%" y="-60%" width="120%" height="220%">
-      <feGaussianBlur stdDeviation="4" />
+    <!-- userSpaceOnUse: a straight path has a zero-height (or zero-width) bounding box, which collapses a bbox-relative blur. -->
+    <filter id="nf-soft" filterUnits="userSpaceOnUse" x="0" y="0" width={NET_WIDTH} height={NET_HEIGHT}>
+      <feGaussianBlur stdDeviation="3.5" />
     </filter>
 
     {#each NET_LINKS as item, index (index)}
@@ -33,49 +35,59 @@
   </defs>
 
   {#each NET_LINKS as item, index (index)}
-    <path d={item.d} pathLength="100" fill="none" stroke="rgba(255,255,255,.075)" stroke-width="1.4" />
-  {/each}
+    <path class="wire" d={item.d} fill="none" stroke={gradient(index)} stroke-width="1.2" />
 
-  {#each NET_LINKS as item, index (index)}
-    {#each idleDelays(index) as delay (delay)}
+    {#each packetDelays(index) as delay (delay)}
       <path
-        class="idle"
+        class="packet"
         d={item.d}
         pathLength="100"
         fill="none"
         stroke={gradient(index)}
-        stroke-width="1.8"
+        stroke-width="2.6"
         stroke-linecap="round"
-        stroke-dasharray="9 91"
-        style:animation-delay="{delay}s"
+        stroke-dasharray="0.01 99.99"
+        style:animation-delay={delay}
       />
     {/each}
   {/each}
 
-  {#each NET_LINKS as item, index (index)}
-    <g class="hot" class:on={index === link}>
-      <path d={item.d} pathLength="100" fill="none" stroke={gradient(index)} stroke-width="1.6" opacity=".45" />
-
-      {#each COMET_DELAYS as delay (delay)}
-        {#each COMET_LAYERS as layer, layerIndex (layerIndex)}
-          <path
-            class="comet"
-            d={item.d}
-            pathLength="100"
-            fill="none"
-            stroke={layer.white ? '#FFFFFF' : gradient(index)}
-            stroke-width={layer.width}
-            stroke-linecap="round"
-            stroke-dasharray="{layer.length} {100 - layer.length}"
-            filter={layer.blur ? 'url(#nf-blur)' : undefined}
-            opacity={layer.opacity}
-            style:animation-name="nfDash{layer.length}"
-            style:animation-delay={delay}
-          />
-        {/each}
-      {/each}
+  {#key link}
+    <g class="hot">
+      <path
+        class="draw"
+        d={hot.d}
+        pathLength="100"
+        fill="none"
+        stroke={gradient(link)}
+        stroke-width="6"
+        opacity=".45"
+        filter="url(#nf-soft)"
+      />
+      <path class="draw" d={hot.d} pathLength="100" fill="none" stroke={gradient(link)} stroke-width="1.8" stroke-linecap="round" />
+      <path
+        class="pulse"
+        d={hot.d}
+        pathLength="100"
+        fill="none"
+        stroke={gradient(link)}
+        stroke-width="7"
+        stroke-linecap="round"
+        stroke-dasharray="0.01 99.99"
+        filter="url(#nf-soft)"
+      />
+      <path
+        class="pulse"
+        d={hot.d}
+        pathLength="100"
+        fill="none"
+        stroke="#fff"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-dasharray="0.01 99.99"
+      />
     </g>
-  {/each}
+  {/key}
 </svg>
 
 <style>
@@ -85,39 +97,68 @@
     overflow: visible;
   }
 
-  .idle {
-    opacity: 0.32;
-    animation: nfDash9 5.2s linear infinite;
+  .wire {
+    opacity: 0.16;
   }
 
-  /* Hidden links keep their comets running (so the crossfade never restarts them) but are not painted. */
+  .packet {
+    opacity: 0.55;
+    animation: nfTravel 6s linear infinite;
+  }
+
   .hot {
+    animation: nfShow 0.35s ease both;
+  }
+
+  /* The hot line draws itself from sender to receiver in 0.7s; the receiving card lights up as it lands. */
+  .draw {
+    stroke-dasharray: 100 100;
+    animation: nfDraw 0.7s cubic-bezier(0.3, 0.7, 0.2, 1) both;
+  }
+
+  .pulse {
     opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.7s ease,
-      visibility 0s linear 0.7s;
+    animation:
+      nfTravel 1.5s cubic-bezier(0.45, 0, 0.55, 1) 0.6s infinite,
+      nfShow 0.01s linear 0.6s forwards;
   }
 
-  .hot.on {
-    opacity: 1;
-    visibility: visible;
-    transition:
-      opacity 0.7s ease,
-      visibility 0s;
+  @keyframes nfDraw {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 
-  .comet {
-    animation-duration: 1.6s;
-    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
-    animation-iteration-count: infinite;
+  @keyframes nfTravel {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 
-  /* Reduced motion: no moving light, the hot link stays lit as a plain line. */
+  @keyframes nfShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Reduced motion: no moving light; the hot link is drawn in full and stays lit. */
   @media (prefers-reduced-motion: reduce) {
-    .idle,
-    .comet {
+    .packet,
+    .pulse {
       display: none;
+    }
+
+    .draw {
+      stroke-dasharray: none;
     }
   }
 </style>
