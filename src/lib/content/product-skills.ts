@@ -10,7 +10,7 @@ export const SKILLS: Product = {
   tagline: 'From a natural-language request to reviewed, verified work.',
   // README intro paragraph.
   definition:
-    'Harness Skills is a set of owned us-* skills for Oh My Pi, Claude Code, OpenCode and Codex that take a natural-language request to reviewed, verified work.',
+    'Harness Skills is a set of owned us-* skills for Oh My Pi, Claude Code, OpenCode, Codex and Pi that take a natural-language request to reviewed, verified work.',
 
   // README intro table, "Skill-led development", skill table, "Focused audits and delivery".
   features: [
@@ -52,7 +52,7 @@ export const SKILLS: Product = {
     },
   ],
 
-  // README "Installation", "Claude Code", "OpenCode", "Codex" sections.
+  // README "Installation", "Claude Code", "OpenCode", "Codex", "Pi" sections.
   harnesses: [
     {
       name: 'Oh My Pi (OMP)',
@@ -71,12 +71,17 @@ export const SKILLS: Product = {
       support:
         'Plugin gives the 23 skills. The full install also adds eight agents and the memory MCP server. Needs Node.js 22+ and the codex CLI.',
     },
+    {
+      name: 'Pi',
+      support:
+        'Pi package with the 23 skills. Work runs inline; reviews and the release assessment run in a fresh read-only pi process. Needs only the pi CLI.',
+    },
   ],
 
   // README "Installation" and "OpenCode": curl/PowerShell installers; the README states no OS limit for the plugin installs.
   platforms: ['macOS', 'Linux', 'Windows (PowerShell installer for OpenCode and Codex)'],
 
-  // README "Installation", "Claude Code", "OpenCode", "Codex", verbatim commands.
+  // README "Installation", "Claude Code", "OpenCode", "Codex", "Pi", verbatim commands.
   install: [
     {
       platform: 'omp',
@@ -101,6 +106,11 @@ export const SKILLS: Product = {
       label: 'Codex',
       command:
         'codex plugin marketplace add MSpiechowicz/harness-useful-skills\ncodex plugin add harness-useful-skills@harness-useful-skills',
+    },
+    {
+      platform: 'pi',
+      label: 'Pi',
+      command: 'pi install git:github.com/MSpiechowicz/harness-useful-skills',
     },
   ],
 
@@ -132,11 +142,11 @@ export const SKILLS: Product = {
   faq: [
     {
       q: 'What is Harness Skills?',
-      a: 'Harness Skills is a set of owned us-* skills for Oh My Pi, Claude Code, OpenCode and Codex. These harnesses discover the skill descriptions, and the model follows the relevant instructions with its own native tools and workers. It takes a request to reviewed, verified work.',
+      a: 'Harness Skills is a set of owned us-* skills for Oh My Pi, Claude Code, OpenCode, Codex and Pi. These harnesses discover the skill descriptions, and the model follows the relevant instructions with its own native tools and workers. It takes a request to reviewed, verified work.',
     },
     {
       q: 'Which coding agents does Harness Skills support?',
-      a: 'Oh My Pi, Claude Code, OpenCode and Codex. Each has its own install section. Claude Code gets 23 namespaced skills and eight native agents. OpenCode v1.x and v2.x are supported. Codex needs the codex CLI. All adapters need Node.js 22 or newer.',
+      a: 'Oh My Pi, Claude Code, OpenCode, Codex and Pi. Each has its own install section. Claude Code gets 23 namespaced skills and eight native agents. OpenCode v1.x and v2.x are supported. Codex needs the codex CLI. These adapters need Node.js 22 or newer; Pi installs the skills as a Pi package with only the pi CLI.',
     },
     {
       q: 'How do I install Harness Skills?',

@@ -19,7 +19,7 @@ export const FAMILY_FAQ: Faq[] = [
   },
   {
     q: 'Which coding agents do the tools support?',
-    a: 'Harness Desktop supports Oh My Pi and PI, with partial OpenCode support and chat previews for OpenCode, Claude Code and Codex. Harness Skills supports Oh My Pi, Claude Code, OpenCode and Codex. Harness Memory, Harness Knowledge and Harness Code work with any MCP client. Harness Dashboard reads 13 tools, including Gemini CLI, GitHub Copilot, Zed, Cline, Roo Code, Kilo Code and Cursor.',
+    a: 'Harness Desktop supports Oh My Pi and PI, with partial OpenCode support and chat previews for OpenCode, Claude Code and Codex. Harness Skills supports Oh My Pi, Claude Code, OpenCode, Codex and Pi. Harness Memory, Harness Knowledge and Harness Code work with any MCP client. Harness Dashboard reads 13 tools, including Gemini CLI, GitHub Copilot, Zed, Cline, Roo Code, Kilo Code and Cursor.',
   },
   {
     q: 'Is Harness Useful free and open source?',

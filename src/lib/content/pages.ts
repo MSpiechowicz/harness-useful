@@ -25,7 +25,7 @@ const TEXT: Record<RouteId, PageText> = {
   skills: {
     title: 'Harness Skills – workflow skills for coding agents',
     description:
-      'Harness Skills are us-* skills for Oh My Pi, Claude Code, OpenCode and Codex that take a request to reviewed, verified work. Open source.',
+      'Harness Skills are us-* skills for Oh My Pi, Claude Code, OpenCode, Codex and Pi that take a request to reviewed, verified work. Open source.',
     crumb: 'Harness Skills',
   },
   memory: {

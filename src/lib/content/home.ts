@@ -311,7 +311,7 @@ export const COMPARISON: CompareRow[] = [
     what: 'us-* skills that take a request to reviewed, verified work.',
     runsAs: 'Plugin or skills loaded by your harness',
     platforms: PRODUCTS.skills.platforms.join(', '),
-    worksWith: 'Oh My Pi, Claude Code, OpenCode, Codex',
+    worksWith: 'Oh My Pi, Claude Code, OpenCode, Codex, Pi',
     dataLives: 'Plugin files in your harness',
     license: PRODUCTS.skills.license,
   },
