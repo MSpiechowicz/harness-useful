@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/MSpiechowicz/harness-useful/compare/v1.2.0...v1.3.0) (2026-11-01)
+
+
+### Features
+
+* **skills:** show the release assessment in the Skills workflow ([e69352d](https://github.com/MSpiechowicz/harness-useful/commit/e69352d6d463d4d278b8d1207a6e1ec92d79c64e))
+
 # [1.2.0](https://github.com/MSpiechowicz/harness-useful/compare/v1.1.2...v1.2.0) (2026-11-01)
 
 
