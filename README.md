@@ -1,6 +1,6 @@
 # harness-useful
 
-The website of the Harness Useful family, live at [harness-useful.com](https://harness-useful.com). It presents four open source tools that upgrade a coding agent: Harness Desktop (the window), Harness Skills (the workflow), Harness Memory (the memory) and Harness Dashboard (the meter).
+The website of the Harness Useful family, live at [harness-useful.com](https://harness-useful.com). It presents six open source tools that upgrade a coding agent: [Harness Desktop](https://github.com/MSpiechowicz/harness-useful-desktop) (the window), [Harness Skills](https://github.com/MSpiechowicz/harness-useful-skills) (the workflow), [Harness Memory](https://github.com/MSpiechowicz/harness-useful-memory) (the memory), [Harness Knowledge](https://github.com/MSpiechowicz/harness-useful-knowledge) (the documentation), [Harness Code](https://github.com/MSpiechowicz/harness-useful-code) (the code graph) and [Harness Dashboard](https://github.com/MSpiechowicz/harness-useful-dashboard) (the meter).
 
 The site is fully prerendered, ships no analytics and sets no cookies.
 
