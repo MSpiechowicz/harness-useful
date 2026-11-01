@@ -10,9 +10,10 @@ const TEXT: Record<RouteId, PageText> = {
   home: {
     title: 'Harness Useful – tools for coding-agent harnesses',
     description:
-      'Harness Useful is a family of four open-source, local tools for coding-agent CLIs: a desktop window, a workflow, shared memory and a usage meter.',
+      'Harness Useful is a family of six open-source, local tools for coding-agent CLIs: a window, a workflow, memory, docs search, a code graph and a usage meter.',
     ogTitle: 'Harness Useful: local tools for your coding agent',
-    ogDescription: 'Desktop, skills, memory, dashboard. Four open-source local tools around the coding-agent CLI you already run.',
+    ogDescription:
+      'Desktop, skills, memory, knowledge, code, dashboard. Six open-source local tools around the coding-agent CLI you already run.',
     crumb: 'Home',
   },
   desktop: {
@@ -32,6 +33,18 @@ const TEXT: Record<RouteId, PageText> = {
     description:
       'Harness Memory is a local MCP server that gives Claude Code, Codex, OMP, PI and OpenCode one shared project memory. SQLite, per repository.',
     crumb: 'Harness Memory',
+  },
+  knowledge: {
+    title: 'Harness Knowledge – searchable docs for coding agents',
+    description:
+      'Harness Knowledge is a local MCP server that lets Claude Code, Codex, OMP, PI and OpenCode search your imported docs and cite the passages. Hybrid search.',
+    crumb: 'Harness Knowledge',
+  },
+  code: {
+    title: 'Harness Code – a local code graph for coding agents',
+    description:
+      'Harness Code is a local MCP server that indexes a repository with tree-sitter and tells coding agents where code is defined, used and reached from.',
+    crumb: 'Harness Code',
   },
   dashboard: {
     title: 'Harness Dashboard – token usage and cost of AI coding',
@@ -65,6 +78,8 @@ export const PAGES: Record<RouteId, PageMeta> = {
   desktop: buildPage('desktop'),
   skills: buildPage('skills'),
   memory: buildPage('memory'),
+  knowledge: buildPage('knowledge'),
+  code: buildPage('code'),
   dashboard: buildPage('dashboard'),
   faq: buildPage('faq'),
 };
@@ -73,7 +88,7 @@ export const PAGES: Record<RouteId, PageMeta> = {
 export const NOT_FOUND_PAGE: PageMeta = {
   title: 'Page not found – Harness Useful',
   description:
-    'This page does not exist. Go back to the Harness Useful home page to find the desktop app, skills, memory server and usage dashboard.',
+    'This page does not exist. Go back to the Harness Useful home page to find the desktop app, skills, memory, knowledge and code servers and the usage dashboard.',
   path: '/404',
   slug: '404',
   breadcrumbs: [HOME_CRUMB, { name: 'Page not found', path: '/404' }],

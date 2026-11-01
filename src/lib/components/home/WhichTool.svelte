@@ -5,7 +5,7 @@
 
   // Answer-first section for "which tool do I need?" (also read by assistants). Facts come from COMPARISON.
   const ANSWER =
-    'Start with Harness Desktop, which installs the other three for you, or pick one tool: Skills for the workflow, Memory for shared project notes, Dashboard for token usage and cost.';
+    'Start with Harness Desktop, which installs the other five for you, or pick one tool: Skills for the workflow, Memory for shared project notes, Knowledge for searchable docs, Code for a code graph, Dashboard for token usage and cost.';
 
   /** "Any MCP client, including Claude Code, Codex" → ["Any MCP client", "Claude Code", "Codex"]. */
   const tags = (list: string) => list.replace('including ', '').split(', ');

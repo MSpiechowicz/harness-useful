@@ -15,7 +15,7 @@ export const NET_HOPS: Hop[] = [
     t: 'Harness Desktop → your CLI',
     s: 'prompt + hook context',
     title: 'Desktop hands it to your CLI',
-    body: 'First the hooks you approved add their context: search memory first, check skills and limits, check the branch.',
+    body: 'First the hooks you approved add their context: search memory and knowledge first, check skills and limits, check the branch.',
     benefit: 'One set of rules for every harness.',
   },
   {
@@ -35,12 +35,52 @@ export const NET_HOPS: Hop[] = [
     benefit: 'Nothing is relearned.',
   },
   {
+    link: 9,
+    t: 'your CLI → Harness Knowledge',
+    s: 'knowledge_search',
+    title: 'The agent checks the written docs',
+    body: 'knowledge_search over the guides, ADRs and API specs you imported, keyword and vector ranking merged.',
+    benefit: 'Answers come from your docs, not a guess.',
+  },
+  {
+    link: 10,
+    t: 'Harness Knowledge → your CLI',
+    s: '3 passages with their section',
+    title: 'Cited passages come back',
+    body: 'Title, section and snippet of each hit; the agent reads the one it needs in full with knowledge_get.',
+    benefit: 'Every claim has a source.',
+  },
+  {
     link: 2,
     t: 'your CLI → Harness Skills',
     s: 'pick a lane, research, plan',
     title: 'Skills pick a lane and plan',
     body: 'A read-only scout researches the code, then the planner drafts work packages with acceptance criteria.',
     benefit: 'Understood before it is changed.',
+  },
+  {
+    link: 11,
+    t: 'your CLI → Harness Code',
+    s: 'code_map · code_path',
+    title: 'The scout asks the code graph',
+    body: 'A ranked map of the key files, then how the config loader reaches the parser, instead of grepping and opening files.',
+    benefit: 'Fewer files read, fewer tokens spent.',
+  },
+  {
+    link: 12,
+    t: 'Harness Code → your CLI',
+    s: '4 hops with path:line',
+    title: 'The call chain comes back',
+    body: 'One hop per line with path:line and the call site, read from an index that refreshes itself on every call.',
+    benefit: 'The plan names the exact lines.',
+  },
+  {
+    link: 13,
+    t: 'your CLI → Harness Desktop',
+    s: 'plan + approval request',
+    title: 'The plan comes back to Desktop',
+    body: 'The work packages and their acceptance criteria show up in the chat, with an Approve button next to them.',
+    benefit: 'Readable before anything changes.',
   },
   {
     link: 8,
@@ -87,6 +127,11 @@ export const NET_ENDS: [NetNode['key'], NetNode['key']][] = [
   ['cli', 'dashboard'],
   ['dashboard', 'desktop'],
   ['desktop', 'you'],
+  ['cli', 'knowledge'],
+  ['knowledge', 'cli'],
+  ['cli', 'code'],
+  ['code', 'cli'],
+  ['cli', 'desktop'],
 ];
 
 export const NET_COLORS: Record<NetNode['key'], string> = {
@@ -95,11 +140,13 @@ export const NET_COLORS: Record<NetNode['key'], string> = {
   cli: '#5EEAC4',
   skills: '#A3E635',
   memory: '#E879F9',
+  knowledge: '#D4A373',
+  code: '#F87171',
   dashboard: '#FBBF24',
 };
 
-/** Duration of one hop in the board's auto-play. */
-export const NET_MS = 3200;
+/** Duration of one hop in the auto-play: long enough for the comet to land twice and the step text to be read. */
+export const NET_MS = 4200;
 
 /** Node labels of the network diagram (board markup). */
 export const NET_NODES: NetNode[] = [
@@ -108,5 +155,7 @@ export const NET_NODES: NetNode[] = [
   { key: 'cli', name: 'your CLI', sub: 'omp · claude · codex' },
   { key: 'skills', name: 'Harness Skills', sub: 'loaded into the CLI' },
   { key: 'memory', name: 'Harness Memory', sub: 'MCP · per repo' },
+  { key: 'knowledge', name: 'Harness Knowledge', sub: 'MCP · project docs' },
+  { key: 'code', name: 'Harness Code', sub: 'MCP · code graph' },
   { key: 'dashboard', name: 'Harness Dashboard', sub: 'MCP · local data' },
 ];

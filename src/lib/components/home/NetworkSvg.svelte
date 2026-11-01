@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import { NET_COLORS, NET_ENDS } from '$lib/content/home-net';
-  import { NET_HEIGHT, NET_LINKS, NET_WIDTH, packetDelays } from './net-paths';
+  import { NET_HEIGHT, NET_LINKS, NET_WIDTH, NET_WIRES, quietColor } from './net-paths';
 
   interface Props {
     /** Index of the link running hot (Hop.link of the current step). */
@@ -11,12 +12,26 @@
 
   const gradient = (index: number) => `url(#nf-g${index})`;
   const hot = $derived(NET_LINKS[link]);
+  const receiver = $derived(NET_COLORS[NET_ENDS[link][1]]);
+
+  // The request direction of each wire colours it; NET_LINKS lists every wire's request before its reply.
+  const wireEnds = NET_WIRES.map((_, wire) => NET_ENDS[NET_LINKS.findIndex((item) => item.wire === wire)]);
+
+  // The comet's tail is a stack of streaks that share its head: longer ones are fainter, so the tail fades out behind it.
+  // Streaks have a real length; a zero-length round cap turns into a plus or a square once the diagram is scaled down.
+  const TAIL = [
+    { length: 44, width: 1.6, opacity: 0.12 },
+    { length: 28, width: 1.8, opacity: 0.2 },
+    { length: 16, width: 2.2, opacity: 0.35 },
+    { length: 7, width: 2.6, opacity: 0.6 },
+  ];
 </script>
 
 <!--
-  The family as a living network. Every link is a quiet wire in its sender-to-receiver gradient with two light packets
-  drifting along it. The link of the current step is re-mounted on every step: it draws itself from sender to receiver,
-  then a bright pulse keeps running along it. Purely decorative: the step text lives outside the SVG.
+  The family as a quiet network. Every connection is one still wire, drawn opaque in a dimmed request gradient so the dot
+  grid never shows through it. Only the link of the current step moves: it lights up at once in its sender-to-receiver
+  gradient and a comet runs along it from sender to receiver, so a reply runs back along its request's wire. The link is
+  re-mounted on every step, which restarts the comet, and crossfades with the link of the previous step. Purely decorative: the step text lives outside the SVG.
 -->
 <svg class="net-svg" width={NET_WIDTH} height={NET_HEIGHT} viewBox="0 0 {NET_WIDTH} {NET_HEIGHT}" aria-hidden="true" focusable="false">
   <defs>
@@ -32,59 +47,60 @@
         <stop offset="1" stop-color={NET_COLORS[toKey]} />
       </linearGradient>
     {/each}
+
+    {#each NET_WIRES as item, index (index)}
+      {@const [fromKey, toKey] = wireEnds[index]}
+      <linearGradient id="nf-w{index}" gradientUnits="userSpaceOnUse" x1={item.from[0]} y1={item.from[1]} x2={item.to[0]} y2={item.to[1]}>
+        <stop offset="0" stop-color={quietColor(NET_COLORS[fromKey])} />
+        <stop offset="1" stop-color={quietColor(NET_COLORS[toKey])} />
+      </linearGradient>
+    {/each}
   </defs>
 
-  {#each NET_LINKS as item, index (index)}
-    <path class="wire" d={item.d} fill="none" stroke={gradient(index)} stroke-width="1.2" />
-
-    {#each packetDelays(index) as delay (delay)}
-      <path
-        class="packet"
-        d={item.d}
-        pathLength="100"
-        fill="none"
-        stroke={gradient(index)}
-        stroke-width="2.6"
-        stroke-linecap="round"
-        stroke-dasharray="0.01 99.99"
-        style:animation-delay={delay}
-      />
-    {/each}
+  {#each NET_WIRES as item, index (index)}
+    <path d={item.d} fill="none" stroke="url(#nf-w{index})" stroke-width="1.4" stroke-linecap="round" />
   {/each}
 
   {#key link}
-    <g class="hot">
+    <!-- The link of the previous step fades out while this one fades in, so a step never snaps to the next. -->
+    <g style:--len={hot.length} transition:fade={{ duration: 700 }}>
+      <path d={hot.d} fill="none" stroke={gradient(link)} stroke-width="5" opacity=".25" filter="url(#nf-soft)" />
+      <path d={hot.d} fill="none" stroke={gradient(link)} stroke-width="1.6" stroke-linecap="round" />
+
       <path
-        class="draw"
+        class="comet"
         d={hot.d}
-        pathLength="100"
         fill="none"
-        stroke={gradient(link)}
-        stroke-width="6"
-        opacity=".45"
-        filter="url(#nf-soft)"
-      />
-      <path class="draw" d={hot.d} pathLength="100" fill="none" stroke={gradient(link)} stroke-width="1.8" stroke-linecap="round" />
-      <path
-        class="pulse"
-        d={hot.d}
-        pathLength="100"
-        fill="none"
-        stroke={gradient(link)}
+        stroke={receiver}
         stroke-width="7"
         stroke-linecap="round"
-        stroke-dasharray="0.01 99.99"
+        stroke-dasharray="10 {hot.length + 60}"
+        opacity=".45"
         filter="url(#nf-soft)"
+        style:--streak={10}
       />
+      {#each TAIL as streak (streak.length)}
+        <path
+          class="comet"
+          d={hot.d}
+          fill="none"
+          stroke={receiver}
+          stroke-width={streak.width}
+          stroke-linecap="round"
+          stroke-dasharray="{streak.length} {hot.length + 60}"
+          opacity={streak.opacity}
+          style:--streak={streak.length}
+        />
+      {/each}
       <path
-        class="pulse"
+        class="comet"
         d={hot.d}
-        pathLength="100"
         fill="none"
         stroke="#fff"
         stroke-width="3"
         stroke-linecap="round"
-        stroke-dasharray="0.01 99.99"
+        stroke-dasharray="2 {hot.length + 60}"
+        style:--streak={2}
       />
     </g>
   {/key}
@@ -97,68 +113,27 @@
     overflow: visible;
   }
 
-  .wire {
-    opacity: 0.16;
+  /* The comet leaves the sender at once, lands in 0.9s (the receiving card lights up over the same time), then waits
+     past the end of the wire and runs again. */
+  .comet {
+    animation: nfComet 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
 
-  .packet {
-    opacity: 0.55;
-    animation: nfTravel 6s linear infinite;
-  }
-
-  .hot {
-    animation: nfShow 0.35s ease both;
-  }
-
-  /* The hot line draws itself from sender to receiver in 0.7s; the receiving card lights up as it lands. */
-  .draw {
-    stroke-dasharray: 100 100;
-    animation: nfDraw 0.7s cubic-bezier(0.3, 0.7, 0.2, 1) both;
-  }
-
-  .pulse {
-    opacity: 0;
-    animation:
-      nfTravel 1.5s cubic-bezier(0.45, 0, 0.55, 1) 0.6s infinite,
-      nfShow 0.01s linear 0.6s forwards;
-  }
-
-  @keyframes nfDraw {
+  /* The head of a streak of length --streak sits at the start of the wire, then just past its end. */
+  @keyframes nfComet {
     from {
-      stroke-dashoffset: 100;
+      stroke-dashoffset: calc(var(--streak) * 1px);
     }
+    56%,
     to {
-      stroke-dashoffset: 0;
+      stroke-dashoffset: calc((var(--streak) - var(--len) - 52) * 1px);
     }
   }
 
-  @keyframes nfTravel {
-    from {
-      stroke-dashoffset: 100;
-    }
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes nfShow {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  /* Reduced motion: no moving light; the hot link is drawn in full and stays lit. */
+  /* Reduced motion: no comet; the current link is lit in full and stays lit. */
   @media (prefers-reduced-motion: reduce) {
-    .packet,
-    .pulse {
+    .comet {
       display: none;
-    }
-
-    .draw {
-      stroke-dasharray: none;
     }
   }
 </style>

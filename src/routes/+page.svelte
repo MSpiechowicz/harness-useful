@@ -4,12 +4,14 @@
   import Section from '$lib/components/ui/Section.svelte';
   import { FAMILY_FAQ } from '$lib/content/faq';
   import { BLOCKS } from '$lib/content/home';
+  import CodeDemo from '$lib/components/home/CodeDemo.svelte';
   import DashboardShowcase from '$lib/components/home/DashboardShowcase.svelte';
   import DataLives from '$lib/components/home/DataLives.svelte';
   import DesktopDemo from '$lib/components/home/DesktopDemo.svelte';
   import DiffStat from '$lib/components/home/DiffStat.svelte';
   import Hero from '$lib/components/home/Hero.svelte';
   import Install from '$lib/components/home/Install.svelte';
+  import KnowledgeDemo from '$lib/components/home/KnowledgeDemo.svelte';
   import LifeOfPrompt from '$lib/components/home/LifeOfPrompt.svelte';
   import Marquee from '$lib/components/home/Marquee.svelte';
   import MemoryDemo from '$lib/components/home/MemoryDemo.svelte';
@@ -35,8 +37,12 @@
           <DesktopDemo />
         {:else if block.id === 'skills'}
           <SkillsDemo />
-        {:else}
+        {:else if block.id === 'memory'}
           <MemoryDemo />
+        {:else if block.id === 'knowledge'}
+          <KnowledgeDemo />
+        {:else}
+          <CodeDemo />
         {/if}
       {/snippet}
     </ProductBlock>

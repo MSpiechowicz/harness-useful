@@ -5,10 +5,10 @@ import { PRODUCTS } from '$lib/content/products';
 import { pageMarkdown } from './markdown';
 
 const SUMMARY =
-  'Harness Useful is a family of four open-source, local tools for coding-agent harnesses such as Oh My Pi, PI, OpenCode, Claude Code and Codex: Harness Desktop (a desktop window), Harness Skills (a workflow), Harness Memory (shared project memory) and Harness Dashboard (a token usage and cost meter). Everything runs on your machine, with no telemetry and no accounts.';
+  'Harness Useful is a family of six open-source, local tools for coding-agent harnesses such as Oh My Pi, PI, OpenCode, Claude Code and Codex: Harness Desktop (a desktop window), Harness Skills (a workflow), Harness Memory (shared project memory), Harness Knowledge (searchable project documentation), Harness Code (a code graph) and Harness Dashboard (a token usage and cost meter). Everything runs on your machine, with no telemetry and no accounts.';
 
 const CONTEXT =
-  'Each tool works on its own, and Harness Desktop can install the others with one recommended setup. All four are free under the GNU General Public License version 3. Every page of this site has a Markdown twin at the same path with a .md extension (the home page is index.md).';
+  'Each tool works on its own, and Harness Desktop can install the others with one recommended setup. All six are free under the GNU General Public License version 3. Every page of this site has a Markdown twin at the same path with a .md extension (the home page is index.md).';
 
 const markdownLink = (label: string, slug: string, note: string): string => `- [${label}](${absoluteUrl(`/${slug}.md`)}): ${note}`;
 

@@ -16,7 +16,7 @@ export const AUTHOR = {
   url: 'https://github.com/MSpiechowicz',
 } as const;
 
-export type RouteId = 'home' | 'desktop' | 'skills' | 'memory' | 'dashboard' | 'faq';
+export type RouteId = 'home' | 'desktop' | 'skills' | 'memory' | 'knowledge' | 'code' | 'dashboard' | 'faq';
 
 export interface RouteEntry {
   id: RouteId;
@@ -32,6 +32,8 @@ export const ROUTES: readonly RouteEntry[] = [
   { id: 'desktop', path: '/desktop', slug: 'desktop' },
   { id: 'skills', path: '/skills', slug: 'skills' },
   { id: 'memory', path: '/memory', slug: 'memory' },
+  { id: 'knowledge', path: '/knowledge', slug: 'knowledge' },
+  { id: 'code', path: '/code', slug: 'code' },
   { id: 'dashboard', path: '/dashboard', slug: 'dashboard' },
   { id: 'faq', path: '/faq', slug: 'faq' },
 ];
@@ -44,7 +46,7 @@ export function absoluteUrl(path: string): string {
   return trimmed === '/' ? `${SITE_URL}/` : `${SITE_URL}${trimmed}`;
 }
 
-export const PRODUCT_IDS = ['desktop', 'skills', 'memory', 'dashboard'] as const;
+export const PRODUCT_IDS = ['desktop', 'skills', 'memory', 'knowledge', 'code', 'dashboard'] as const;
 export type ProductId = (typeof PRODUCT_IDS)[number];
 
 export const SITE_REPO = 'https://github.com/MSpiechowicz/harness-useful';
@@ -54,6 +56,8 @@ export const REPOS: Record<ProductId, string> = {
   desktop: 'https://github.com/MSpiechowicz/harness-useful-desktop',
   skills: 'https://github.com/MSpiechowicz/harness-useful-skills',
   memory: 'https://github.com/MSpiechowicz/harness-useful-memory',
+  knowledge: 'https://github.com/MSpiechowicz/harness-useful-knowledge',
+  code: 'https://github.com/MSpiechowicz/harness-useful-code',
   dashboard: 'https://github.com/MSpiechowicz/harness-useful-dashboard',
 };
 
@@ -63,6 +67,8 @@ export const GRADIENTS: Record<ProductId | 'family', [string, string]> = {
   desktop: ['#38BDF8', '#818CF8'],
   skills: ['#A3E635', '#22C55E'],
   memory: ['#D946EF', '#FB923C'],
+  knowledge: ['#8B5A2B', '#D4A373'],
+  code: ['#DC2626', '#F87171'],
   dashboard: ['#F59E0B', '#F472B6'],
 };
 
@@ -72,6 +78,8 @@ export const COLORS = {
   desktop: '#7DD3FC',
   skills: '#A3E635',
   memory: '#E879F9',
+  knowledge: '#D4A373',
+  code: '#F87171',
   dashboard: '#FBBF24',
   /** CLI / agent output. */
   agent: '#5EEAC4',

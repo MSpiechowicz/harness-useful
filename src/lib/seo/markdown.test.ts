@@ -45,10 +45,10 @@ describe('pageMarkdown', () => {
     expect(pageMarkdown('desktop')).toContain('## Is Harness Desktop private? Where does my data live?');
   });
 
-  test('the home page numbers the nine hops and has the comparison table', () => {
+  test('the home page numbers the fourteen hops and has the comparison table', () => {
     const markdown = pageMarkdown('home');
 
-    expect(NET_HOPS).toHaveLength(9);
+    expect(NET_HOPS).toHaveLength(14);
 
     NET_HOPS.forEach((hop, index) => {
       expect(markdown).toContain(`${index + 1}. **${hop.title}**`);

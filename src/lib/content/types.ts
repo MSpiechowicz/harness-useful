@@ -124,7 +124,7 @@ export interface DashboardTab {
 
 /** A node of the "life of a prompt" network. */
 export interface NetNode {
-  key: 'you' | 'desktop' | 'cli' | 'skills' | 'memory' | 'dashboard';
+  key: 'you' | 'desktop' | 'cli' | 'skills' | 'memory' | 'knowledge' | 'code' | 'dashboard';
   name: string;
   sub: string;
 }
@@ -144,7 +144,7 @@ export interface DataConnection {
 }
 
 export interface Tour {
-  id: Exclude<ProductId, 'memory'>;
+  id: Exclude<ProductId, 'memory' | 'knowledge' | 'code'>;
   caption: string;
 }
 

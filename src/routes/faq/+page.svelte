@@ -19,9 +19,10 @@
 
     <h1>Harness Useful FAQ</h1>
     <p class="intro">
-      Harness Useful is a family of four open-source, local tools for coding-agent harnesses: Harness Desktop is the window, Harness Skills
-      the workflow, Harness Memory the shared project memory and Harness Dashboard the usage and cost meter. These answers cover what they
-      are, where to start, which agents they support, how to install them and where your data lives.
+      Harness Useful is a family of six open-source, local tools for coding-agent harnesses: Harness Desktop is the window, Harness Skills
+      the workflow, Harness Memory the shared project memory, Harness Knowledge the searchable project documentation, Harness Code the code
+      graph and Harness Dashboard the usage and cost meter. These answers cover what they are, where to start, which agents they support,
+      how to install them and where your data lives.
     </p>
 
     <nav aria-label="FAQ groups">

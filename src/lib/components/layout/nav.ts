@@ -6,6 +6,8 @@ const LABELS: Record<RouteId, string> = {
   desktop: 'Desktop',
   skills: 'Skills',
   memory: 'Memory',
+  knowledge: 'Knowledge',
+  code: 'Code',
   dashboard: 'Dashboard',
   faq: 'FAQ',
 };

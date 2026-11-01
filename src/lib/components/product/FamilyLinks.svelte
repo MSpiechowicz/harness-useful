@@ -13,6 +13,8 @@
     desktop: 'the window',
     skills: 'the workflow',
     memory: 'the shared project memory',
+    knowledge: 'the searchable project documentation',
+    code: 'the code graph',
     dashboard: 'the usage and cost meter',
   };
 
@@ -21,8 +23,9 @@
 </script>
 
 <p>
-  {product.name} is {ROLES[id]} in Harness Useful, a family of four open-source, local tools for coding-agent harnesses. Harness Desktop is the
-  window, Harness Skills the workflow, Harness Memory the shared project memory and Harness Dashboard the usage and cost meter.
+  {product.name} is {ROLES[id]} in Harness Useful, a family of six open-source, local tools for coding-agent harnesses. Harness Desktop is the
+  window, Harness Skills the workflow, Harness Memory the shared project memory, Harness Knowledge the searchable project documentation, Harness
+  Code the code graph and Harness Dashboard the usage and cost meter.
 </p>
 <p>
   Each tool works on its own. Harness Desktop’s Recommended setup can install the others after you confirm each part and register their MCP
@@ -39,7 +42,7 @@
 </ul>
 
 <p class="more">
-  See <a href="/">the Harness Useful home page</a>, <a href="/#products">all four tools side by side</a> or the
+  See <a href="/">the Harness Useful home page</a>, <a href="/#products">every tool side by side</a> or the
   <a href="/faq">family FAQ</a>.
 </p>
 

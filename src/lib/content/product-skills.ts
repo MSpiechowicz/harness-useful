@@ -39,8 +39,8 @@ export const SKILLS: Product = {
       text: 'us-open-pr and us-approve-work deliver reviewed work as a feature-branch pull request, only when you explicitly authorize it.',
     },
     {
-      title: 'Memory',
-      text: 'Agent-invoked memory for durable facts alongside code relationships. us-use-harness-memory pairs with the separate Harness Memory MCP tools.',
+      title: 'Memory, docs and code graph',
+      text: 'Agent-invoked memory for durable facts. us-use-harness-memory and us-use-harness-knowledge pair with the separate Harness Memory and Harness Knowledge MCP tools, and the code graph comes from Harness Code.',
     },
     {
       title: 'A fast lane',
@@ -56,7 +56,7 @@ export const SKILLS: Product = {
     },
     {
       name: 'Claude Code',
-      support: 'Marketplace plugin with 21 namespaced skills and seven native agents. Needs Node.js 22+.',
+      support: 'Marketplace plugin with 23 namespaced skills and eight native agents. Needs Node.js 22+.',
     },
     {
       name: 'OpenCode',
@@ -65,7 +65,7 @@ export const SKILLS: Product = {
     {
       name: 'Codex',
       support:
-        'Plugin gives the 21 skills. The full install also adds seven agents and the memory MCP server. Needs Node.js 22+ and the codex CLI.',
+        'Plugin gives the 23 skills. The full install also adds eight agents and the memory MCP server. Needs Node.js 22+ and the codex CLI.',
     },
   ],
 
@@ -132,7 +132,7 @@ export const SKILLS: Product = {
     },
     {
       q: 'Which coding agents does Harness Skills support?',
-      a: 'Oh My Pi, Claude Code, OpenCode and Codex. Each has its own install section. Claude Code gets 21 namespaced skills and seven native agents. OpenCode v1.x and v2.x are supported. Codex needs the codex CLI. All adapters need Node.js 22 or newer.',
+      a: 'Oh My Pi, Claude Code, OpenCode and Codex. Each has its own install section. Claude Code gets 23 namespaced skills and eight native agents. OpenCode v1.x and v2.x are supported. Codex needs the codex CLI. All adapters need Node.js 22 or newer.',
     },
     {
       q: 'How do I install Harness Skills?',
@@ -144,7 +144,7 @@ export const SKILLS: Product = {
     },
     {
       q: 'Does Harness Skills include memory?',
-      a: 'Yes. Claude Code, OpenCode and Codex get a separate local memory server with memory_status, memory_search, memory_save, graph_build and graph_query tools, with project-scoped private files. The us-use-harness-memory skill works with the separate Harness Memory MCP tools.',
+      a: 'Yes. Claude Code, OpenCode and Codex get a separate local memory server with memory_status, memory_search and memory_save tools, with project-scoped private files. The us-use-harness-memory and us-use-harness-knowledge skills work with the separate Harness Memory and Harness Knowledge MCP tools, and code graph lookups use the Harness Code tools.',
     },
     {
       q: 'Is Harness Skills free and open source?',

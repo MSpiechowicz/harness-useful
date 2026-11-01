@@ -81,7 +81,7 @@ function homeMarkdown(): string {
     `## ${SECTIONS.flow.title}\n\n${SECTIONS.flow.lead}\n\n${hops}`,
     `## ${SECTIONS.diff.lead.replace(/\.$/, '')}\n\n${table(['Before', 'With the family', 'Tool'], diffRows)}`,
     `## Which tool do I need?\n\n${table(['Tool', 'What it does', 'Runs as', 'Platforms', 'Works with', 'Where data lives', 'License'], comparisonRows)}`,
-    `## The four tools\n\n${productSection}`,
+    `## The six tools\n\n${productSection}`,
     `## ${INSTALL.title}\n\n${INSTALL.lead}\n\n${installBlocks.join('\n\n')}`,
     faqSection(FAMILY_FAQ),
     `## Links\n\n- Website: ${absoluteUrl('/')}\n- FAQ: ${absoluteUrl('/faq')}`,

@@ -4,7 +4,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import satori from 'satori';
-import { COLORS, GRADIENTS, ROUTES, SITE_URL, type ProductId, type RouteId } from '$lib/config/site';
+import { COLORS, GRADIENTS, PRODUCT_IDS, ROUTES, SITE_URL, type ProductId, type RouteId } from '$lib/config/site';
 import { HERO } from '$lib/content/home';
 import { PRODUCTS } from '$lib/content/products';
 import { markSvg } from './mark';
@@ -21,7 +21,7 @@ interface OgCard {
   gradient: GradientPair;
 }
 
-const PRODUCT_IDS_SET = new Set<string>(['desktop', 'skills', 'memory', 'dashboard']);
+const PRODUCT_IDS_SET = new Set<string>(PRODUCT_IDS);
 
 const isProduct = (target: OgTarget): target is ProductId => PRODUCT_IDS_SET.has(target);
 
@@ -49,7 +49,7 @@ export function ogCard(target: OgTarget): OgCard {
     return {
       eyebrow: 'harness useful / 404',
       title: 'Page not found',
-      description: 'Back to the desktop app, skills, memory and usage dashboard.',
+      description: 'Back to the desktop app, skills, memory, knowledge, code graph and usage dashboard.',
       gradient: GRADIENTS.family,
     };
   }

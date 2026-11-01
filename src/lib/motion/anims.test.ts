@@ -1,5 +1,16 @@
 import { describe, expect, test } from 'bun:test';
-import { DESKTOP_COMMENT, SKILLS_FRAMES, desktopFrame, memoryFrame, netFrame, skillsFrame, skillsStage, typed } from './anims';
+import {
+  DESKTOP_COMMENT,
+  SKILLS_FRAMES,
+  codeFrame,
+  desktopFrame,
+  knowledgeFrame,
+  memoryFrame,
+  netFrame,
+  skillsFrame,
+  skillsStage,
+  typed,
+} from './anims';
 
 // Expectations come from the approved board (TerminalStory.dc.html, anims(t) and net(step)).
 
@@ -123,13 +134,92 @@ describe('memoryFrame', () => {
   });
 });
 
+describe('knowledgeFrame', () => {
+  test('types the query, then reveals the three pointers one by one from frame 3', () => {
+    expect(knowledgeFrame(0).query).toBe('');
+    expect(knowledgeFrame(2).query).toBe('how are refunds retried');
+    expect(knowledgeFrame(2).results).toEqual([false, false, false]);
+    expect(knowledgeFrame(3).results).toEqual([true, false, false]);
+    expect(knowledgeFrame(4).results).toEqual([true, true, false]);
+    expect(knowledgeFrame(5).results).toEqual([true, true, true]);
+  });
+
+  test('highlights the top hit from 3 until the passage is read at 8', () => {
+    expect(knowledgeFrame(2).hit).toBe(false);
+    expect(knowledgeFrame(3).hit).toBe(true);
+    expect(knowledgeFrame(8).hit).toBe(true);
+    expect(knowledgeFrame(9).hit).toBe(false);
+  });
+
+  test('reads the passage, then proposes a doc that waits for review', () => {
+    expect(knowledgeFrame(5).lines[2]).toBe(false);
+    expect(knowledgeFrame(6).lines[2]).toBe(true);
+    expect(knowledgeFrame(8).lines).toEqual([true, true, true, true, true, false]);
+    expect(knowledgeFrame(9).lines[5]).toBe(true);
+    expect(knowledgeFrame(9).card).toBe(false);
+    expect(knowledgeFrame(10).card).toBe(true);
+    expect(knowledgeFrame(10).newDoc).toBe(false);
+  });
+
+  test('approving at frame 13 makes the new doc searchable', () => {
+    expect(knowledgeFrame(12).approveText).toBe('Approve');
+    expect(knowledgeFrame(12).approveActive).toBe(true);
+    expect(knowledgeFrame(13).approveText).toBe('✓ Approved · searchable');
+    expect(knowledgeFrame(13).newDoc).toBe(true);
+    expect(knowledgeFrame(14).next).toBe(true);
+  });
+
+  test('wraps around the sixteen frames', () => {
+    expect(knowledgeFrame(16)).toEqual(knowledgeFrame(0));
+    expect(knowledgeFrame(-1)).toEqual(knowledgeFrame(15));
+  });
+});
+
+describe('codeFrame', () => {
+  test('strikes out the grep once the indexed hint shows at frame 2', () => {
+    expect(codeFrame(1).lines).toEqual([true, false, false, false]);
+    expect(codeFrame(1).struck).toBe(false);
+    expect(codeFrame(2).lines[1]).toBe(true);
+    expect(codeFrame(2).struck).toBe(true);
+  });
+
+  test('types the code_path query over frames 3 and 4', () => {
+    expect(codeFrame(2).query).toBe('');
+    expect(codeFrame(3).query.length).toBeGreaterThan(0);
+    expect(codeFrame(3).query.length).toBeLessThan('handle empty config'.length);
+    expect(codeFrame(4).query).toBe('handle empty config');
+  });
+
+  test('reveals the four hops one by one from frame 5', () => {
+    expect(codeFrame(4).hops).toEqual([false, false, false, false]);
+    expect(codeFrame(5).hops).toEqual([true, false, false, false]);
+    expect(codeFrame(7).hops).toEqual([true, true, true, false]);
+    expect(codeFrame(8).hops).toEqual([true, true, true, true]);
+  });
+
+  test('summarises the impact in a card whose rows follow at 12 and 13', () => {
+    expect(codeFrame(10).lines[3]).toBe(true);
+    expect(codeFrame(10).card).toBe(false);
+    expect(codeFrame(11).card).toBe(true);
+    expect(codeFrame(11).impact).toEqual([false, false]);
+    expect(codeFrame(12).impact).toEqual([true, false]);
+    expect(codeFrame(13).impact).toEqual([true, true]);
+    expect(codeFrame(14).next).toBe(true);
+  });
+
+  test('wraps around the sixteen frames', () => {
+    expect(codeFrame(16)).toEqual(codeFrame(0));
+    expect(codeFrame(-1)).toEqual(codeFrame(15));
+  });
+});
+
 describe('netFrame', () => {
   test('hop 1 runs link 0 from you to Desktop', () => {
     const frame = netFrame(0);
 
     expect(frame.link).toBe(0);
     expect(frame.num).toBe('01');
-    expect(frame.total).toBe('09');
+    expect(frame.total).toBe('14');
     expect(frame.caption).toMatchObject({ title: 'you → Harness Desktop', color: '#F2F7F5', anim: 'nfCapA' });
     expect(frame.nodes.desktop.role).toBe('to');
     expect(frame.nodes.you.role).toBe('from');
@@ -138,10 +228,24 @@ describe('netFrame', () => {
 
   test('caption animation alternates and the last hop runs link 7', () => {
     expect(netFrame(1).caption.anim).toBe('nfCapB');
-    expect(netFrame(8).link).toBe(7);
+    expect(netFrame(13).link).toBe(7);
   });
 
-  test('wraps around the nine hops', () => {
-    expect(netFrame(9)).toEqual(netFrame(0));
+  test('Knowledge answers after Memory, and Code after Skills plan', () => {
+    expect(netFrame(4).nodes.knowledge.role).toBe('to');
+    expect(netFrame(5).nodes.knowledge.role).toBe('from');
+    expect(netFrame(7).nodes.code.role).toBe('to');
+    expect(netFrame(8).nodes.code.role).toBe('from');
+  });
+
+  test('the plan travels back through Desktop before you approve it', () => {
+    expect(netFrame(9).nodes.cli.role).toBe('from');
+    expect(netFrame(9).nodes.desktop.role).toBe('to');
+    expect(netFrame(10).nodes.desktop.role).toBe('from');
+    expect(netFrame(10).nodes.you.role).toBe('to');
+  });
+
+  test('wraps around the fourteen hops', () => {
+    expect(netFrame(14)).toEqual(netFrame(0));
   });
 });

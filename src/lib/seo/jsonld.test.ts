@@ -111,11 +111,11 @@ describe('pageGraph', () => {
     }
   });
 
-  test('the home page lists the four software applications and the three tours', () => {
+  test('the home page lists the six software applications and the three tours', () => {
     const graph = pageGraph('home');
     const list = ofType(graph, 'ItemList')[0];
 
-    expect(list.itemListElement).toHaveLength(4);
+    expect(list.itemListElement).toHaveLength(6);
     expect(ofType(graph, 'SoftwareApplication').map((app) => app.name)).toEqual(PRODUCT_IDS.map((id) => PRODUCTS[id].name));
     expect(ofType(graph, 'VideoObject')).toHaveLength(3);
     expect(ofType(graph, 'FAQPage')).toHaveLength(0);

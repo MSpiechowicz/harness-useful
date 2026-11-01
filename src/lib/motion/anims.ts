@@ -9,6 +9,8 @@ export const TICK = 650;
 export const DESKTOP_FRAMES = 16;
 export const SKILLS_FRAMES = 18;
 export const MEMORY_FRAMES = 16;
+export const KNOWLEDGE_FRAMES = 16;
+export const CODE_FRAMES = 16;
 
 /** The first `frac` (0..1) of a string, rounded to whole characters; used for typing effects. */
 export function typed(text: string, frac: number): string {
@@ -178,6 +180,74 @@ export function memoryFrame(tick: number): MemoryFrame {
     saveText: m >= 12 ? '✓ Saved' : 'Save',
     newNote: m >= 12,
     next: m >= 13,
+  };
+}
+
+// --- Knowledge: knowledge_search, pointers, knowledge_get, knowledge_add proposal, Approve, searchable ---
+
+export const KNOWLEDGE_QUERY = 'how are refunds retried';
+
+export interface KnowledgeFrame {
+  query: string;
+  /** Terminal lines revealed so far: knowledge_search, pointers, knowledge_get, breadcrumb, passage, knowledge_add. */
+  lines: [boolean, boolean, boolean, boolean, boolean, boolean];
+  /** The three result pointers, revealed one by one. */
+  results: [boolean, boolean, boolean];
+  /** The top result is highlighted while the agent reads it. */
+  hit: boolean;
+  card: boolean;
+  /** Approve button is highlighted / pressed. */
+  approveActive: boolean;
+  approveText: string;
+  newDoc: boolean;
+  next: boolean;
+}
+
+export function knowledgeFrame(tick: number): KnowledgeFrame {
+  const k = frameOf(tick, KNOWLEDGE_FRAMES);
+
+  return {
+    query: typed(KNOWLEDGE_QUERY, k >= 1 ? k / 2 : 0),
+    lines: [k >= 1, k >= 3, k >= 6, k >= 7, k >= 8, k >= 9],
+    results: [k >= 3, k >= 4, k >= 5],
+    hit: k >= 3 && k <= 8,
+    card: k >= 10,
+    approveActive: k >= 12,
+    approveText: k >= 13 ? '✓ Approved · searchable' : 'Approve',
+    newDoc: k >= 13,
+    next: k >= 14,
+  };
+}
+
+// --- Code: grep nudge, code_path hop by hop, code_impact summary ---
+
+export const CODE_QUERY = 'handle empty config';
+
+export interface CodeFrame {
+  query: string;
+  /** Terminal lines revealed so far: grep, indexed hint, code_path, code_impact. */
+  lines: [boolean, boolean, boolean, boolean];
+  /** The grep line is struck out once the hint replaces it. */
+  struck: boolean;
+  /** The four hops of the path, revealed one by one (also lit in the code map). */
+  hops: [boolean, boolean, boolean, boolean];
+  card: boolean;
+  /** Impact card rows revealed so far: callers, tests. */
+  impact: [boolean, boolean];
+  next: boolean;
+}
+
+export function codeFrame(tick: number): CodeFrame {
+  const c = frameOf(tick, CODE_FRAMES);
+
+  return {
+    query: typed(CODE_QUERY, c >= 3 ? (c - 2) / 2 : 0),
+    lines: [c >= 1, c >= 2, c >= 3, c >= 10],
+    struck: c >= 2,
+    hops: [c >= 5, c >= 6, c >= 7, c >= 8],
+    card: c >= 11,
+    impact: [c >= 12, c >= 13],
+    next: c >= 14,
   };
 }
 

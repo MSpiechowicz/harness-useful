@@ -179,9 +179,10 @@
     background: linear-gradient(#0e1314, #0b0f10);
     box-shadow: 0 10px 30px rgb(0 0 0 / 40%);
     font-family: var(--font-mono);
+    /* A card dims as slowly as the link of its last step fades out (see NetworkSvg). */
     transition:
-      border-color 0.4s ease,
-      box-shadow 0.4s ease;
+      border-color 0.7s ease,
+      box-shadow 0.7s ease;
   }
 
   .node.from {
@@ -191,14 +192,14 @@
       0 10px 30px rgb(0 0 0 / 40%);
   }
 
-  /* The receiver lights up fully when the hot line lands on it (the line draws in 0.7s; see NetworkSvg). */
+  /* The receiver starts lighting up as the comet leaves the sender and is fully lit as it lands (0.9s; see NetworkSvg). */
   .node.to {
     border-color: var(--tone);
     box-shadow:
       0 0 0 1px var(--tone),
       0 0 22px color-mix(in srgb, var(--tone) 55%, transparent),
       0 0 64px color-mix(in srgb, var(--tone) 28%, transparent);
-    transition-delay: 0.55s;
+    transition-duration: 0.9s;
   }
 
   .name {
@@ -233,7 +234,7 @@
     color: var(--tone);
     opacity: 0;
     pointer-events: none;
-    animation: nfRing 0.9s ease-out 0.55s;
+    animation: nfRing 0.9s ease-out 0.8s;
   }
 
   .caption-row {

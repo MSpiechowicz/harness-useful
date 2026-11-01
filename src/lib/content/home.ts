@@ -1,9 +1,10 @@
 // Homepage content, ported verbatim from the approved board (TerminalStory.dc.html).
 // Product facts in COMPARISON come from the product READMEs via products.ts.
-import { COLORS, REPOS } from '$lib/config/site';
+import { COLORS } from '$lib/config/site';
 import { PRODUCTS } from './products';
-import type { CompareRow, DashboardTab, DataCard, DataConnection, DiffRow, ProductBlock, Tour } from './types';
+import type { CompareRow, DashboardTab, DataCard, DataConnection, DiffRow, Tour } from './types';
 
+export { BLOCKS } from './home-blocks';
 export { NET_COLORS, NET_ENDS, NET_HOPS, NET_MS, NET_NODES } from './home-net';
 
 /** Header navigation of the board. */
@@ -19,9 +20,9 @@ export const HERO = {
   eyebrow: '// open source · runs locally',
   /** h1 lines; the second one is the teal line. */
   h1: ['Local tools for', 'your coding agent.'],
-  /** The four products in one line (OG card description). */
-  products: 'Desktop, skills, memory, dashboard.',
-  lead: 'A desktop app, skills, shared memory and a usage dashboard for the CLI you already run: Claude Code, Codex, OpenCode, PI or Oh My Pi.',
+  /** The six products in one line (OG card description). */
+  products: 'Desktop, skills, memory, knowledge, code, dashboard.',
+  lead: 'A desktop app, skills, shared memory, searchable docs, a code graph and a usage dashboard for the CLI you already run: Claude Code, Codex, OpenCode, PI or Oh My Pi.',
   ctas: [
     { label: '$ install desktop', href: '#install' },
     { label: '▶ watch a prompt travel', href: '#flow' },
@@ -93,7 +94,7 @@ export const SECTIONS = {
   flow: {
     prompt: '$ harness trace --prompt "Handle empty config input"',
     title: 'The life of one prompt in the family',
-    lead: 'Follow a single request through the family: light runs along every connection, and the step happening now lights up.',
+    lead: 'Follow a single request through the family: the connection in use lights up, and a light runs from the sender to the receiver.',
   },
   diff: {
     title: 'git diff --stat your-workflow',
@@ -113,7 +114,7 @@ export const SECTIONS = {
   tours: { title: 'Watch them work. About a minute each.' },
   install: {
     title: 'One install. It brings the family.',
-    lead: 'Install Desktop, then Ecosystem → Run recommended setup. It installs Dashboard, Memory and Skills, registers their MCP servers in every harness it finds and adds the family hooks, asking before each step.',
+    lead: 'Install Desktop, then Ecosystem → Run recommended setup. It installs Dashboard, Memory, Knowledge, Code and Skills, registers their MCP servers in every harness it finds and adds the family hooks, asking before each step.',
   },
   footer: 'exit 0 · harness useful family · open source',
 } as const;
@@ -124,6 +125,18 @@ export const DIFFS: DiffRow[] = [
     after: 'Sessions start with the repo’s notes, recalled by any harness.',
     tool: 'memory',
     color: COLORS.memory,
+  },
+  {
+    before: 'The agent guesses how your billing service works.',
+    after: 'It searches the docs you imported and cites the passage.',
+    tool: 'knowledge',
+    color: COLORS.knowledge,
+  },
+  {
+    before: 'Grep, open ten files, grep again to follow one call.',
+    after: 'One code_path answer: the call chain with path:line.',
+    tool: 'code',
+    color: COLORS.code,
   },
   {
     before: 'The agent jumps straight into edits.',
@@ -148,116 +161,6 @@ export const DIFFS: DiffRow[] = [
     after: 'One window for config and extensions, secrets masked.',
     tool: 'desktop',
     color: COLORS.desktop,
-  },
-];
-
-export const BLOCKS: ProductBlock[] = [
-  {
-    id: 'desktop',
-    tag: 'harness desktop · the heart',
-    color: COLORS.desktop,
-    grad: 'linear-gradient(180deg,#818CF8,#38BDF8)',
-    href: REPOS.desktop,
-    note: 'animated · example data',
-    title: 'Review like a human. Reply like a prompt.',
-    lead: 'Your coding-agent CLI in a native window, with everything a terminal is bad at.',
-    bullets: [
-      {
-        h: 'Comment on the real diff',
-        p: 'Staged, unstaged and untracked changes. Click a line, then send every comment back as one prompt.',
-      },
-      { h: 'Every session is a branch tree', p: 'Open any transcript, resume it, or fork from any point.' },
-      { h: 'Approvals you can read', p: 'Allow a shell command once, or deny it, before it runs.' },
-      {
-        h: 'One place for five harnesses',
-        p: 'Config, MCP servers, plugins and skills of OMP, PI, OpenCode, Claude Code and Codex, with secrets masked.',
-      },
-    ],
-    shots: [
-      { img: 'd-changes.webp', cap: 'Changes · comment on any line', alt: 'Changes view with a unified diff' },
-      {
-        img: 'd-sessions.webp',
-        cap: 'Sessions · branch tree, resume or fork',
-        alt: 'Sessions view with a branch tree and transcript',
-      },
-      { img: 'd-approval.webp', cap: 'Approval · allow bash once', alt: 'Approval dialog asking to allow cargo test' },
-      {
-        img: 'd-ecosystem.webp',
-        cap: 'Ecosystem · the family and your usage',
-        alt: 'Ecosystem view with the family diagram and usage cards',
-      },
-    ],
-  },
-  {
-    id: 'skills',
-    tag: 'harness skills',
-    color: COLORS.skills,
-    grad: 'linear-gradient(180deg,#22C55E,#A3E635)',
-    href: REPOS.skills,
-    note: 'animated · example data',
-    title: 'From a request to a verified PR, with a plan you approve.',
-    lead: 'us-* skills that your harness discovers and follows with its own tools and workers.',
-    bullets: [
-      { h: 'Research before edits', p: 'A read-only scout maps the code, callers and conventions first.' },
-      { h: 'A plan with acceptance criteria', p: 'Nothing changes until you approve it.' },
-      { h: 'Workers on the model you choose', p: 'Frontend, backend and general packages run in parallel.' },
-      {
-        h: 'Fresh reviews, back for repair',
-        p: 'Independent correctness and security reviews send findings back to Build.',
-      },
-    ],
-    shots: [
-      { img: 's-plan.webp', cap: 'Plan · approved by you', alt: 'Skills tour: plan with an Approve button' },
-      {
-        img: 's-build.webp',
-        cap: 'Build · parallel workers',
-        alt: 'Skills tour: frontend, backend and general-purpose workers with progress',
-      },
-      {
-        img: 's-review.webp',
-        cap: 'Review · back to Build for repair',
-        alt: 'Skills tour: correctness finding sent back to build',
-      },
-      {
-        img: 's-pr.webp',
-        cap: 'Verify · pull request',
-        alt: 'Skills tour: tests, lint, types and reviews passed, pull request opened',
-      },
-    ],
-  },
-  {
-    id: 'memory',
-    tag: 'harness memory',
-    color: COLORS.memory,
-    grad: 'linear-gradient(180deg,#FB923C,#D946EF)',
-    href: REPOS.memory,
-    note: 'animated · example data',
-    title: 'Agents that remember your repository.',
-    lead: 'One local binary, one MCP server, shared by every harness you use.',
-    bullets: [
-      {
-        h: 'Search first, save last',
-        p: 'Family hooks make agents look up notes at session start and record what they learned at turn end.',
-      },
-      { h: 'You stay the editor', p: 'Proposed notes appear in the chat with Save, Edit and Skip.' },
-      {
-        h: 'Typed, linked notes',
-        p: 'Decisions, fixes, problems and locations, linked to files and to each other.',
-      },
-      {
-        h: 'Private by default',
-        p: 'SQLite with full-text search, secrets redacted, no network unless you set up a team database.',
-      },
-    ],
-    shots: [
-      { img: 'm-notes.webp', cap: 'Notes · typed, linked, recalled', alt: 'Notes view with an open note' },
-      { img: 'm-memory-save.webp', cap: 'Chat · save, edit or skip', alt: 'Proposed memory notes in the chat' },
-      {
-        img: 'm-hooks.webp',
-        cap: 'Hooks · search first, save last',
-        alt: 'Hooks view with the family hooks active',
-      },
-    ],
   },
 ];
 
@@ -320,7 +223,8 @@ export const DASHBOARD_POINTS = [
   { label: 'For agents too', icon: 'bot', text: 'An MCP server lets agents read budgets and plan limits before long work.' },
 ] as const;
 
-// README paths: Desktop "Hooks" (harness-hooks/hooks), Memory "Where data lives", Dashboard "Privacy".
+// README paths: Desktop "Hooks" (harness-hooks/hooks), Memory "Where data lives", Knowledge "Team database", Code "Data",
+// Dashboard "Privacy".
 // The board wrote "usage.sqlite" for the dashboard; the dashboard README names the file usage.db.
 export const DATA_LIVES: DataCard[] = [
   {
@@ -334,6 +238,18 @@ export const DATA_LIVES: DataCard[] = [
     name: 'memory',
     path: 'harness-memory/ · SQLite FTS5',
     text: 'Per git repository. Secrets redacted before anything is stored.',
+  },
+  {
+    tool: 'knowledge',
+    name: 'knowledge',
+    path: 'harness-knowledge/knowledge.sqlite3',
+    text: 'Imported documents and their index. Agents only propose; a person approves.',
+  },
+  {
+    tool: 'code',
+    name: 'code',
+    path: 'harness-code/code.sqlite3',
+    text: 'The code index of every repository. Nothing is written into a repository.',
   },
   {
     tool: 'dashboard',
@@ -358,7 +274,7 @@ export const DATA_LIVES: DataCard[] = [
 export const DATA_CONNECTIONS: DataConnection[] = [
   { name: 'Your model provider', text: 'through your own CLI and your own login' },
   { name: 'GitHub releases', text: 'signed update checks, can be turned off' },
-  { name: 'A team memory database', text: 'only if you configure one' },
+  { name: 'A team memory or knowledge database', text: 'only if you configure one' },
 ];
 
 export const TOURS: Tour[] = [
@@ -408,6 +324,26 @@ export const COMPARISON: CompareRow[] = [
     worksWith: 'Any MCP client, including Claude Code, Codex, OMP, PI, OpenCode',
     dataLives: 'memory.sqlite3 in the harness-memory folder of your user data directory',
     license: PRODUCTS.memory.license,
+  },
+  {
+    id: 'knowledge',
+    name: PRODUCTS.knowledge.name,
+    what: 'Searchable project documentation with cited passages for your coding agents.',
+    runsAs: 'Local stdio MCP server (one binary)',
+    platforms: PRODUCTS.knowledge.platforms.join(', '),
+    worksWith: 'Any MCP client, including Claude Code, Codex, OMP, PI, OpenCode',
+    dataLives: 'knowledge.sqlite3 in the harness-knowledge folder of your user data directory, or a team database you configure',
+    license: PRODUCTS.knowledge.license,
+  },
+  {
+    id: 'code',
+    name: PRODUCTS.code.name,
+    what: 'A code graph of your repository: definitions, callers, impact and call chains.',
+    runsAs: 'Local stdio MCP server (one binary)',
+    platforms: PRODUCTS.code.platforms.join(', '),
+    worksWith: 'Any MCP client, including Claude Code, Codex, OMP, PI, OpenCode',
+    dataLives: 'code.sqlite3 in the harness-code folder of your user data directory',
+    license: PRODUCTS.code.license,
   },
   {
     id: 'dashboard',

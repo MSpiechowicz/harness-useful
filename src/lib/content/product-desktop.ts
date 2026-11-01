@@ -40,7 +40,7 @@ export const DESKTOP: Product = {
     },
     {
       title: 'Recommended setup',
-      text: 'An optional step that, after you confirm each part, installs Harness Dashboard, Harness Memory and Harness Skills and registers their MCP servers in each detected harness.',
+      text: 'An optional step that, after you confirm each part, installs Harness Dashboard, Harness Memory, Harness Knowledge, Harness Code and Harness Skills and registers their MCP servers in each detected harness.',
     },
     {
       title: 'Share setup',
@@ -149,8 +149,8 @@ export const DESKTOP: Product = {
       a: 'Yes. Harness Desktop is open source under the GPL-3.0-or-later license, copyright Maciej Spiechowicz. The source and releases are on GitHub.',
     },
     {
-      q: 'How does Harness Desktop work with Memory, Skills and Dashboard?',
-      a: 'Its Recommended setup installs Harness Dashboard, Harness Memory and Harness Skills after you confirm each part, and registers their MCP servers in each detected harness. It also adds family hooks that ask agents to search memory first and check limits with the dashboard before long work.',
+      q: 'How does Harness Desktop work with the rest of the family?',
+      a: 'Its Recommended setup installs Harness Dashboard, Harness Memory, Harness Knowledge, Harness Code and Harness Skills after you confirm each part, and registers their MCP servers in each detected harness. It also adds family hooks that ask agents to search memory and knowledge first and check limits with the dashboard before long work, a Knowledge view to import and approve documents, and builds a project’s code index when you open it.',
     },
   ],
   color: COLORS.desktop,
