@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/MSpiechowicz/harness-useful/compare/v1.3.0...v1.4.0) (2026-11-01)
+
+
+### Features
+
+* **skills:** list Pi as a supported harness ([ba3ef5a](https://github.com/MSpiechowicz/harness-useful/commit/ba3ef5a22f7984ae0e353103bf29da95567a2245))
+
 # [1.3.0](https://github.com/MSpiechowicz/harness-useful/compare/v1.2.0...v1.3.0) (2026-11-01)
 
 
