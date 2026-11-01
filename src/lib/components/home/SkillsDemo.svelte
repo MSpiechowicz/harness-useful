@@ -3,7 +3,8 @@
   import { createTicker } from '$lib/motion/ticker.svelte';
 
   // Animated Harness Skills workflow (example data): research, plan approved by you, three workers building, review
-  // sending a finding back, security review and a pull request. Decorative: the product block beside it has the text.
+  // sending a finding back, security review, a release assessment and a pull request with its Review guide.
+  // Decorative: the product block beside it has the text.
   const ticker = createTicker({ interval: TICK });
 
   // Reduced motion: no loop, the last frame shows the delivered pull request.
@@ -71,11 +72,19 @@
         <p class="scope">trust boundaries, inputs, secrets</p>
         <p class="result" style:color={frame.securityColor}>{frame.securityText}</p>
       </div>
+    {:else if frame.stage === 5}
+      <div class="card review">
+        <p class="card-head"><span>Release assessment</span><span class="role">release-assessor · read-only</span></p>
+        <p class="scope">the diff, the findings and the checks that ran</p>
+        <p class="result" class:graded={frame.assessment !== null}>{frame.assessment ?? 'grading the change…'}</p>
+        <p class="check" class:on={frame.assessment !== null}>check · src/middleware/limiter.ts, api/router.ts</p>
+      </div>
     {:else}
       <div class="card delivered">
         <p class="pr-head"><span class="open">Open</span><span class="num">#42</span></p>
         <p class="pr-title">feat: rate limiting for the API</p>
         <p class="pr-branch">feature/rate-limiting → main</p>
+        <p class="pr-guide">Review guide · T3 Moderate · Confidence High</p>
         <p class="pr-note">opened only when you ask for delivery</p>
       </div>
     {/if}
@@ -127,15 +136,16 @@
 
   .stages {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
     padding: 14px;
   }
 
   .stage {
     position: relative;
     overflow: hidden;
-    padding: 9px 6px;
+    padding: 9px 4px;
+    font-size: 11.5px;
     border: 1px solid;
     border-radius: var(--radius-md);
     text-align: center;
@@ -186,6 +196,23 @@
   }
 
   .step.on {
+    opacity: 1;
+  }
+
+  /* Release assessment: the verdict turns green once graded, then the files to check fade in. */
+  .result.graded {
+    color: #a3e635;
+  }
+
+  .check {
+    margin-top: 10px;
+    font-size: 11.5px;
+    color: var(--subtle);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+
+  .check.on {
     opacity: 1;
   }
 
@@ -320,16 +347,21 @@
     color: var(--muted);
   }
 
+  .pr-guide {
+    margin-top: 12px;
+    color: #a3e635;
+  }
+
   .pr-note {
     margin-top: 16px;
     font-size: 11.5px;
     color: var(--subtle);
   }
 
-  /* Phones: six columns are too narrow for "· implement" on one line, so the stages run in two rows of three. */
+  /* Phones: seven columns are too narrow for "· research" on one line, so the stages run in two rows (four, then three). */
   @media (max-width: 640px) {
     .stages {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
 </style>

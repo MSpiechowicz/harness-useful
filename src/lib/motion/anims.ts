@@ -7,7 +7,7 @@ import type { NetNode } from '$lib/content/types';
 export const TICK = 650;
 
 export const DESKTOP_FRAMES = 16;
-export const SKILLS_FRAMES = 18;
+export const SKILLS_FRAMES = 20;
 export const MEMORY_FRAMES = 16;
 export const KNOWLEDGE_FRAMES = 16;
 export const CODE_FRAMES = 16;
@@ -66,12 +66,12 @@ export function desktopFrame(tick: number): DesktopFrame {
   };
 }
 
-// --- Skills: six stages, each with its own filling line ---
+// --- Skills: seven stages, each with its own filling line ---
 
-export const SKILL_STAGES = ['research', 'plan', 'implement', 'review', 'security', 'deliver'] as const;
+export const SKILL_STAGES = ['research', 'plan', 'build', 'review', 'security', 'assess', 'deliver'] as const;
 
 /** Ticks each stage lasts; the stage line is full exactly when the next stage starts. */
-export const STAGE_TICKS = [3, 3, 4, 3, 3, 2] as const;
+export const STAGE_TICKS = [3, 3, 4, 3, 3, 2, 2] as const;
 
 export interface SkillsStage {
   label: string;
@@ -98,17 +98,20 @@ export interface SkillsFrame {
   reviewColor: string;
   securityText: string;
   securityColor: string;
+  /** The release assessor's verdict once it has read the diff, or null while it is still grading. */
+  assessment: string | null;
 }
 
-/** Index of the active stage for loop frame `g` (0..17). */
+/** Index of the active stage for loop frame `g` (0..19). */
 export function skillsStage(g: number): number {
   if (g <= 2) return 0;
   if (g <= 5) return 1;
   if (g <= 9) return 2;
   if (g <= 12) return 3;
   if (g <= 15) return 4;
+  if (g <= 17) return 5;
 
-  return 5;
+  return 6;
 }
 
 function stageView(label: string, index: number, active: number): SkillsStage {
@@ -142,11 +145,12 @@ export function skillsFrame(tick: number): SkillsFrame {
       { role: 'backend', task: 'Limiter middleware and Redis store', width: `${[20, 45, 75, 100][k]}%` },
       { role: 'general-purpose', task: 'Document the limits in the README', width: `${[40, 70, 100, 100][k]}%` },
     ],
-    reviewText: g <= 10 ? 'finding · limit resets on restart' : g === 11 ? '→ back to implement · repaired' : '✓ passed after repair',
+    reviewText: g <= 10 ? 'finding · limit resets on restart' : g === 11 ? '→ back to build · repaired' : '✓ passed after repair',
     reviewColor: g <= 10 ? '#FB923C' : g === 11 ? '#FBBF24' : '#A3E635',
     securityText:
-      g === 13 ? 'checking what changed…' : g === 14 ? 'finding · token printed in debug output' : '→ fixed in implement · ✓ passed',
+      g === 13 ? 'checking what changed…' : g === 14 ? 'finding · token printed in debug output' : '→ fixed in build · ✓ passed',
     securityColor: g === 13 ? '#93A39F' : g === 14 ? '#FB923C' : '#A3E635',
+    assessment: g >= 17 ? 'Tier: T3 Moderate · Confidence: High' : null,
   };
 }
 

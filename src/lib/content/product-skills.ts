@@ -31,6 +31,10 @@ export const SKILLS: Product = {
       text: 'us-review and us-check-security give independent, evidence-based correctness and security reviews.',
     },
     {
+      title: 'Release assessment',
+      text: 'us-assess-release has a fresh read-only release-assessor grade the finished change: a review tier from T0 to T6, a confidence from observed evidence and the files a human should check, also as a Review guide on the pull request.',
+    },
+    {
       title: 'Focused audits',
       text: 'Security, performance and code-quality audits, plus architecture and test-coverage improvements. Audits default to read-only.',
     },

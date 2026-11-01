@@ -57,6 +57,10 @@ export const BLOCKS: ProductBlock[] = [
         h: 'Fresh reviews, back for repair',
         p: 'Independent correctness and security reviews send findings back to Build.',
       },
+      {
+        h: 'A release assessment before the PR',
+        p: 'A read-only assessor grades the change T0–T6 with a confidence and tells you which files to check.',
+      },
     ],
     shots: [
       { img: 's-plan.webp', cap: 'Plan · approved by you', alt: 'Skills tour: plan with an Approve button' },

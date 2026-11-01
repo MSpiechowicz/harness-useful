@@ -93,9 +93,9 @@ export const NET_HOPS: Hop[] = [
   {
     link: 3,
     t: 'Harness Skills → your CLI',
-    s: 'implement · review · security review',
-    title: 'Implement, review, security review',
-    body: 'Workers build in parallel; fresh reviewers check correctness and security, and any finding loops back for repair.',
+    s: 'implement · reviews · release assessment',
+    title: 'Implement, review, assess',
+    body: 'Workers build in parallel, fresh reviewers check correctness and security, and a read-only assessor grades the risk and lists what to check.',
     benefit: 'The agent does not grade its own work.',
   },
   {

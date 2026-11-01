@@ -64,12 +64,12 @@ describe('skillsFrame', () => {
   test('active stage index per frame matches the board', () => {
     const stages = Array.from({ length: SKILLS_FRAMES }, (_, g) => skillsStage(g));
 
-    expect(stages).toEqual([0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5]);
+    expect(stages).toEqual([0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6]);
     expect(Array.from({ length: SKILLS_FRAMES }, (_, g) => skillsFrame(g).stage)).toEqual(stages);
   });
 
   test('only the active stage animates its line, with names alternating per stage', () => {
-    const names = [0, 3, 6, 10, 13, 16].map((g) => {
+    const names = [0, 3, 6, 10, 13, 16, 18].map((g) => {
       const frame = skillsFrame(g);
       const animated = frame.stages.filter((stage) => stage.barAnim !== null);
 
@@ -78,29 +78,32 @@ describe('skillsFrame', () => {
       return animated[0].barAnim;
     });
 
-    expect(names).toEqual(['hfFillA', 'hfFillB', 'hfFillA', 'hfFillB', 'hfFillA', 'hfFillB']);
+    expect(names).toEqual(['hfFillA', 'hfFillB', 'hfFillA', 'hfFillB', 'hfFillA', 'hfFillB', 'hfFillA']);
   });
 
   test('finished stages are full and ticked, upcoming stages empty', () => {
     const { stages } = skillsFrame(10);
 
-    expect(stages.map((stage) => stage.bar)).toEqual(['100%', '100%', '100%', '0', '0', '0']);
-    expect(stages.map((stage) => stage.mark)).toEqual(['✓', '✓', '✓', '·', '·', '·']);
+    expect(stages.map((stage) => stage.bar)).toEqual(['100%', '100%', '100%', '0', '0', '0', '0']);
+    expect(stages.map((stage) => stage.mark)).toEqual(['✓', '✓', '✓', '·', '·', '·', '·']);
   });
 
   test('stage line lasts as long as the stage', () => {
     expect(skillsFrame(0).stages[0].barMs).toBe(3 * 650);
     expect(skillsFrame(6).stages[2].barMs).toBe(4 * 650);
     expect(skillsFrame(16).stages[5].barMs).toBe(2 * 650);
+    expect(skillsFrame(18).stages[6].barMs).toBe(2 * 650);
   });
 
   test('plan is approved from frame 5, review repairs at 11, security fails at 14', () => {
     expect(skillsFrame(4).approved).toBe(false);
     expect(skillsFrame(5).approved).toBe(true);
     expect(skillsFrame(10).reviewText).toBe('finding · limit resets on restart');
-    expect(skillsFrame(11).reviewText).toBe('→ back to implement · repaired');
+    expect(skillsFrame(11).reviewText).toBe('→ back to build · repaired');
     expect(skillsFrame(12).reviewText).toBe('✓ passed after repair');
     expect(skillsFrame(14).securityText).toBe('finding · token printed in debug output');
+    expect(skillsFrame(16).assessment).toBeNull();
+    expect(skillsFrame(17).assessment).toBe('Tier: T3 Moderate · Confidence: High');
   });
 
   test('workers reach 100% by frame 9', () => {
